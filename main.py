@@ -120,11 +120,50 @@ class Polynomial:
         if dictInput:
             self.polynomial = polynomial
         else:
-            #Parse with RegEx
             self.polynomial = self.parse(polynomial)
 
     def parse(self, polynomaial):
-        pass
+        negatives = []
+        additions = re.finditer('\+|-', polynomial)
+        startNegative = re.search('^\+|-', polynomial)
+
+        for i, match in enumerate(additions):
+            if match.group() == '-':
+                if startNegative:
+                    negatives.append(i)
+                else:
+                    negatives.append(i + 1)
+
+        terms = re.split('\+|-', polynomial)
+        if startNegative:
+            del terms[0]
+
+        polynomial = {}
+        for i, term in enumerate(terms):
+            terms[i] = term.strip()
+            term = terms[i]
+            print(term)
+
+            #Check if term should be negative
+            if i in negatives:
+                negativeMultiple = -1
+            else:
+                negativeMultiple = 1
+
+            if 'x' in term:
+                if '^' in term:
+                    term = term.split('x^')
+                    try:
+                        polynomial[float(term[1])] = float(term[0]) * negativeMultiple
+                    except ValueError:
+                        polynomial[float(term[1])] = 1 * negativeMultiple
+                else:
+                    term = term[:-1]
+                    polynomial[1] = float(term) * negativeMultiple
+            else:
+                polynomial[0] = float(term) * negativeMultiple
+
+        return polynomial
 
     def differentiate(self):
         polynomial = {}
@@ -140,12 +179,40 @@ class Polynomial:
 
         return polynomial
 
-def fractionTest():
-    fraction1 = Fraction('3/6')
-    fraction2 = Fraction('9/12')
-    fraction3 = fraction1.addFraction(fraction2)
-    print(fraction3.output())
-  
+    def output(self):
+        #TODO output in readable format
+        return self.polynomial
+
+def test(testType, **kwargs):
+    if testType == 'fraction':
+        return fractionTest(kwargs)
+    elif testType == 'polynomial':
+        return polynomialTest(kwargs)
+
+def fractionTest(kwargs):
+    fraction1 = Fraction(kwargs['fraction1'])
+    fraction2 = Fraction(kwargs['fraction2'])
+
+    opType = kwargs['opType']
+    if opType == 'add':
+        fraction3 = fraction1.addFraction(fraction2)
+    elif opType == 'subtract':
+        fraction3 = fraction1.subFraction(fraction2)
+    elif opType == 'multiply':
+        fraction3 = fraction1.timesFraction(fraction2)
+    elif opType == 'divide':
+        fraction3 = fraction1.divFraction(fraction2)
+
+    return fraction3.output()
+
+def polynomialTest(polynomial, listInputBool):
+    polynomial = Polynomial(polynomial, listInput=listInputBool)
+
+    differentiated = polynomial.differentiate()
+    integrated = polynomial.integrate()
+
+    return [differentiated.output(), integrated.output()]
+    
 def ceiling(num, decPlaces):
     #Set up variables
     overflow = False
@@ -195,4 +262,5 @@ def smartRound(num, decPlaces):
     pass
 
 if __name__ == '__main__':
-    fractionTest()
+    test1 = test('fraction', fraction1='1/2', fraction2='4/5', opType='add')
+    print(test1)
