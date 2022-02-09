@@ -183,35 +183,40 @@ class Polynomial:
         #TODO output in readable format
         return self.polynomial
 
-def test(testType, **kwargs):
-    if testType == 'fraction':
-        return fractionTest(kwargs)
-    elif testType == 'polynomial':
-        return polynomialTest(kwargs)
+class Test:
+    def __init__(self, testType, **kwargs):
+        self.testType = testType
+        self.kwargs = kwargs
 
-def fractionTest(kwargs):
-    fraction1 = Fraction(kwargs['fraction1'])
-    fraction2 = Fraction(kwargs['fraction2'])
+    def test(self):
+        if self.testType == 'fraction':
+            return self.fractionTest()
+        elif self.testType == 'polynomial':
+            return self.polynomialTest()
 
-    opType = kwargs['opType']
-    if opType == 'add':
-        fraction3 = fraction1.addFraction(fraction2)
-    elif opType == 'subtract':
-        fraction3 = fraction1.subFraction(fraction2)
-    elif opType == 'multiply':
-        fraction3 = fraction1.timesFraction(fraction2)
-    elif opType == 'divide':
-        fraction3 = fraction1.divFraction(fraction2)
+    def fractionTest(self):
+        fraction1 = Fraction(self.kwargs['fraction1'])
+        fraction2 = Fraction(self.kwargs['fraction2'])
 
-    return fraction3.output()
+        opType = self.kwargs['opType']
+        if opType == 'add':
+            fraction3 = fraction1.addFraction(fraction2)
+        elif opType == 'subtract':
+            fraction3 = fraction1.subFraction(fraction2)
+        elif opType == 'multiply':
+            fraction3 = fraction1.timesFraction(fraction2)
+        elif opType == 'divide':
+            fraction3 = fraction1.divFraction(fraction2)
 
-def polynomialTest(polynomial, listInputBool):
-    polynomial = Polynomial(polynomial, listInput=listInputBool)
+        return fraction3.output()
 
-    differentiated = polynomial.differentiate()
-    integrated = polynomial.integrate()
+    def polynomialTest(self):
+        polynomial = Polynomial(self.kwargs['polynomial'], listInput=self.kwargs['listInput'])
 
-    return [differentiated.output(), integrated.output()]
+        differentiated = polynomial.differentiate()
+        integrated = polynomial.integrate()
+
+        return [differentiated.output(), integrated.output()]
     
 def ceiling(num, decPlaces):
     #Set up variables
@@ -262,5 +267,5 @@ def smartRound(num, decPlaces):
     pass
 
 if __name__ == '__main__':
-    test1 = test('fraction', fraction1='1/2', fraction2='4/5', opType='add')
-    print(test1)
+    test1 = Test('fraction', fraction1='1/2', fraction2='4/5', opType='add')
+    print(test1.test())
