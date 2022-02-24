@@ -1,3 +1,5 @@
+#By Caleb Robson
+
 import re
 
 class Fraction:
@@ -43,8 +45,7 @@ class Fraction:
         self.dem = int(self.dem / GCD)
             
     #Automatically simplify fractions
-    #Entirely nonfunctional
-    def autoSimplify(self, func):
+    def autoSimplify(func):
         def inner(*args, **kwargs):
             fraction = func(*args, **kwargs)
             fraction.simplify
@@ -61,43 +62,40 @@ class Fraction:
         return self.num/self.dem
   
     #Adds another fraction to this one
+    @autoSimplify
     def addFraction(self, fraction2):
         num = (self.num * fraction2.dem) + (self.dem * fraction2.num)
         dem = self.dem * fraction2.dem
 
-        result = Fraction([num, dem], True)
-        result.simplify()
-        return result
+        return Fraction([num, dem], True)
   
-    #Subtracts another fraction from this one  
+    #Subtracts another fraction from this one
+    @autoSimplify
     def subFraction(self, fraction2):
         num = (self.num * fraction2.dem) - (self.dem * fraction2.num)
         dem = self.dem * fraction2.dem
 
-        result = Fraction([num, dem], True)
-        result.simplify()
-        return result
+        return Fraction([num, dem], True)
   
     #Multiplies this fraction by another one 
+    @autoSimplify
     def timesFraction(self, fraction2):
         num = self.num * fraction2.num
         dem = self.dem * fraction2.dem
 
-        result = Fraction([num, dem], True)
-        result.simplify()
-        return result
+        return Fraction([num, dem], True)
   
-    #Divides this fraction by another one  
+    #Divides this fraction by another one
+    @autoSimplify
     def divFraction(self, fraction2):
         num = self.num * fraction2.dem
         dem = self.dem * fraction2.num
 
-        result = Fraction([num, dem], True)
-        result.simplify()
-        return result
+        return Fraction([num, dem], True)
 
     #Returns a mixed fraction
-    def balance(self, listOutput=False):
+    @property
+    def mixed(self):
         integerPart = 0
         num = self.num
         dem = self.dem
@@ -106,10 +104,13 @@ class Fraction:
             num -= dem
             integerPart += 1
 
-        if listOutput:
-            return [integerPart, [num, dem]]
-        else:
-            return f'{integerPart} {num}/{dem}'
+        return [integerPart, [num, dem]]
+
+    @mixed.setter
+    def mixed(self, fraction):
+        fraction[1][0] += fraction[0] * fraction[1][1]
+        self.num = fraction[1][0]
+        self.dem = fraction[1][1]
     
     #return a list of the numerator and denominator
     def nums(self):
@@ -122,7 +123,8 @@ class Polynomial:
         else:
             self.polynomial = self.parse(polynomial)
 
-    def parse(self, polynomaial):
+    def parse(self, polynomial):
+        #print(f'parsing polynomial {polynomial}') #debug
         negatives = []
         additions = re.finditer('\+|-', polynomial)
         startNegative = re.search('^\+|-', polynomial)
@@ -136,13 +138,14 @@ class Polynomial:
 
         terms = re.split('\+|-', polynomial)
         if startNegative:
+            print('removed first term') # debug
             del terms[0]
 
         polynomial = {}
         for i, term in enumerate(terms):
             terms[i] = term.strip()
             term = terms[i]
-            print(term)
+            print(f'parsing term {term}') #debug
 
             #Check if term should be negative
             if i in negatives:
@@ -156,7 +159,7 @@ class Polynomial:
                     try:
                         polynomial[float(term[1])] = float(term[0]) * negativeMultiple
                     except ValueError:
-                        polynomial[float(term[1])] = 1 * negativeMultiple
+                        polynomial[float(term[1])] = negativeMultiple
                 else:
                     term = term[:-1]
                     polynomial[1] = float(term) * negativeMultiple
@@ -165,36 +168,57 @@ class Polynomial:
 
         return polynomial
 
-    def differentiate(self):
+    @property
+    def differentiated(self):
         polynomial = {}
         for exponent, coefficient in self.polynomial.items():
             polynomial[exponent - 1] = coefficient * exponent
 
         return polynomial
 
-    def integrate(self):
+    @differentiated.setter
+    def differentiated(self, polynomial):
+        self.polynomial = Polynomial(polynomial, dictInput=True).integrated
+
+    @property
+    def integrated(self):
         polynomial = {}
         for exponent, coefficient in self.polynomial.items():
             polynomial[exponent + 1] = coefficient / (exponent + 1)
 
         return polynomial
 
-    def output(self):
-        #TODO output in readable format
-        return self.polynomial
+    @integrated.setter
+    def integrated(self, polynomial):
+        self.polynomial = Polynomial(polynomial, dictInput=True).differentiated
+
+    def output(self, readable=False):
+        if readable:
+            #TODO output in readable format
+            pass
+        else:
+            return self.polynomial
 
 class Test:
     def __init__(self, testType, **kwargs):
         self.testType = testType
         self.kwargs = kwargs
 
-    def test(self):
+    def test(self, *args):
         if self.testType == 'fraction':
-            return self.fractionTest()
+            return self.fractionTest(args)
         elif self.testType == 'polynomial':
-            return self.polynomialTest()
+            return self.polynomialTest(args)
 
-    def fractionTest(self):
+    def outputVars(self):
+        return {
+            'testType': self.testType,
+            'kwargs': self.kwargs
+        }
+
+    #Individual tests
+
+    def fractionTest(self, args):
         fraction1 = Fraction(self.kwargs['fraction1'])
         fraction2 = Fraction(self.kwargs['fraction2'])
 
@@ -210,15 +234,19 @@ class Test:
 
         return fraction3.output()
 
-    def polynomialTest(self):
-        polynomial = Polynomial(self.kwargs['polynomial'], listInput=self.kwargs['listInput'])
+    def polynomialTest(self, args):
+        polynomial = Polynomial(self.kwargs['polynomial'], dictInput=self.kwargs['dictInput'])
 
-        differentiated = polynomial.differentiate()
-        integrated = polynomial.integrate()
+        differentiated = Polynomial(polynomial.differentiated, dictInput=True)
+        integrated = Polynomial(polynomial.integrated, dictInput=True)
 
-        return [differentiated.output(), integrated.output()]
+        return {
+            'polynomial': polynomial.output(), 
+            'differentiated': differentiated.output(), 
+            'integrated': integrated.output()
+        }
     
-def ceiling(num, decPlaces):
+def ceiling(num, decPlaces=0):
     #Set up variables
     overflow = False
     num = str(num)
@@ -240,6 +268,7 @@ def ceiling(num, decPlaces):
     roundMod = 0
     while not complete:
         if numDigits[lastPlace - roundMod] < 9:
+            #If 1 can be added to the selected position
             numDigits[lastPlace - roundMod] += 1
             complete = True
         else:
@@ -253,7 +282,7 @@ def ceiling(num, decPlaces):
     
     #Remove the extra digits
     while len(numDigits) > lastPlace + 1:
-        del numDigits[lastPlace + 1]
+        del numDigits[-1]
   
     #Reformats and outputs the answer   
     numDigits.insert(decPoint + int(overflow), '.')
@@ -264,8 +293,12 @@ def ceiling(num, decPlaces):
     return num
 
 def smartRound(num, decPlaces):
-    pass
+    if str(num)[decPlaces + 1] >= 5:
+        return ceiling(num)
+    else:
+        return round(num, 0)
 
 if __name__ == '__main__':
-    test1 = Test('fraction', fraction1='1/2', fraction2='4/5', opType='add')
+    test1 = Test('polynomial', polynomial='x^3 - 2x + 5', dictInput=False)
     print(test1.test())
+    #print(test1.outputVars())
