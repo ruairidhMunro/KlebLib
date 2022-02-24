@@ -116,7 +116,6 @@ class Fraction:
     def nums(self):
         return ([self.num, self.dem])
 
-
 class Polynomial:
     def __init__(self, polynomial, dictInput=False):
         if dictInput:
@@ -216,7 +215,6 @@ class Polynomial:
         else:
             return self.polynomial
 
-
 class Test:
     def __init__(self, testType, **kwargs):
         self.testType = testType
@@ -261,7 +259,6 @@ class Test:
             'differentiated': differentiated.output(),
             'integrated': integrated.output()
         }
-
 
 def ceiling(num, decPlaces=0):
     #Set up variables
@@ -308,20 +305,14 @@ def ceiling(num, decPlaces=0):
         num += str(i)
     num = float(num)
     return num
-
+    
 
 def smartRound(num, decPlaces):
     if str(num)[decPlaces + 1] >= 5:
         return ceiling(num)
     else:
         return round(num, 0)
-
-
-if __name__ == '__main__':
-    test1 = Test('polynomial', polynomial='x^3 - 2x + 5', dictInput=False)
-    print(test1.test())
-    #print(test1.outputVars())
-
+        
 if __name__ == '__main__':
     test1 = Test('polynomial', polynomial='x^3 - 2x + 5', dictInput=False)
     print(test1.test())
