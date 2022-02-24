@@ -126,8 +126,8 @@ class Polynomial:
     def parse(self, polynomial):
         #print(f'parsing polynomial {polynomial}') #debug
         negatives = []
-        additions = re.finditer('\+|-', polynomial)
-        startNegative = re.search('^\+|-', polynomial)
+        additions = re.finditer('[\+-]', polynomial)
+        startNegative = re.search('^[\+-]', polynomial)
 
         for i, match in enumerate(additions):
             if match.group() == '-':
@@ -136,16 +136,16 @@ class Polynomial:
                 else:
                     negatives.append(i + 1)
 
-        terms = re.split('\+|-', polynomial)
+        terms = re.split('[\+-]', polynomial)
         if startNegative:
-            print('removed first term') # debug
+            #print('removed first term') # debug
             del terms[0]
 
         polynomial = {}
         for i, term in enumerate(terms):
             terms[i] = term.strip()
             term = terms[i]
-            print(f'parsing term {term}') #debug
+            #print(f'parsing term {term}') #debug
 
             #Check if term should be negative
             if i in negatives:
@@ -172,7 +172,8 @@ class Polynomial:
     def differentiated(self):
         polynomial = {}
         for exponent, coefficient in self.polynomial.items():
-            polynomial[exponent - 1] = coefficient * exponent
+            if coefficient * exponent != 0: #If the coefficient will not be 0
+                polynomial[exponent - 1] = coefficient * exponent
 
         return polynomial
 
