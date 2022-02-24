@@ -1,5 +1,4 @@
 #By Caleb Robson
-
 import re
 
 class Fraction:
@@ -16,7 +15,8 @@ class Fraction:
 
         simplified = [x / self.GCD() for x in [self.num, self.dem]]
         if [self.num, self.dem] != simplified:
-            self.simplify()
+            self.num = simplified[0]
+            self.dem = simplified[1]
 
     #Get the greatest common divisor of the numerator and denominator
     def GCD(self):
