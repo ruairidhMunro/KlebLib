@@ -193,6 +193,20 @@ class Polynomial:
     def integrated(self, polynomial):
         self.polynomial = Polynomial(polynomial, dictInput=True).differentiated
 
+    '''Not doing this
+    @property
+    def roots(self):
+        roots = []
+        
+        return roots
+
+    @property
+    def turningPoints(self):
+        turningPoints = []
+        
+        return turningPoints
+    '''
+
     def output(self, readable=False):
         if readable:
             #TODO output in readable format
