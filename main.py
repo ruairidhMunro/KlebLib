@@ -19,6 +19,7 @@ class Fraction:
             self.dem = simplified[1]
 
     #Get the greatest common divisor of the numerator and denominator
+    @property
     def GCD(self):
         num1 = self.num
         num2 = self.dem
@@ -39,7 +40,7 @@ class Fraction:
 
     #Simplify the fraction
     def simplify(self):
-        GCD = self.GCD()
+        GCD = self.GCD
 
         self.num = int(self.num / GCD)
         self.dem = int(self.dem / GCD)
@@ -50,7 +51,6 @@ class Fraction:
             fraction = func(*args, **kwargs)
             fraction.simplify
             return fraction
-
         return inner
 
     #Output the numbers as a fraction
@@ -61,38 +61,80 @@ class Fraction:
     def outputFloat(self):
         return self.num / self.dem
 
-    #Adds another fraction to this one
+    #Adds another fraction to this one and returns a new fraction
     @autoSimplify
-    def addFraction(self, fraction2):
+    def __add__(self, fraction2):
         num = (self.num * fraction2.dem) + (self.dem * fraction2.num)
         dem = self.dem * fraction2.dem
 
         return Fraction([num, dem], True)
 
-    #Subtracts another fraction from this one
+    #Subtracts another fraction from this one and returns a new fraction
     @autoSimplify
-    def subFraction(self, fraction2):
+    def __sub__(self, fraction2):
         num = (self.num * fraction2.dem) - (self.dem * fraction2.num)
         dem = self.dem * fraction2.dem
 
         return Fraction([num, dem], True)
 
-    #Multiplies this fraction by another one
+    #Multiplies another fraction by this one and returns a new fraction
     @autoSimplify
-    def timesFraction(self, fraction2):
+    def __mul__(self, fraction2):
         num = self.num * fraction2.num
         dem = self.dem * fraction2.dem
 
         return Fraction([num, dem], True)
 
-    #Divides this fraction by another one
+    #Divides this fraction by another one and returns a new fraction
     @autoSimplify
-    def divFraction(self, fraction2):
+    def __truediv__(self, fraction2):
         num = self.num * fraction2.dem
         dem = self.dem * fraction2.num
 
         return Fraction([num, dem], True)
 
+    #Adds this fraction to another one and replaces this fraction with the result
+    @autoSimplify
+    def __iadd__(self, fraction2):
+        num = (self.num * fraction2.dem) + (self.dem * fraction2.num)
+        dem = self.dem * fraction2.dem
+
+        self.num = num
+        self.dem = dem
+        return self
+
+    #Subtracts another fraction from this one and replaces this fraction with the result
+    @autoSimplify
+    def __isub__(self, fraction2):
+        num = (self.num * fraction2.dem) - (self.dem * fraction2.num)
+        dem = self.dem * fraction2.dem
+
+        self.num = num
+        self.dem = dem
+        return self
+
+    #Multiplies this fraction by another one and replaces this fraction with the result
+    @autoSimplify
+    def __imul__(self, fraction2):
+        num = self.num * fraction2.num
+        dem = self.dem * fraction2.dem
+
+        self.num = num
+        self.dem = dem
+        return self
+
+    #Divides this fraction by another one and replaces this fraction with the result
+    @autoSimplify
+    def __itruediv__(self, fraction2):
+        num = self.num * fraction2.dem
+        dem = self.dem * fraction2.num
+
+        self.num = num
+        self.dem = dem
+        return self
+
+    #
+    
     #Returns a mixed fraction
     @property
     def mixed(self):
@@ -106,8 +148,10 @@ class Fraction:
 
         return [integerPart, [num, dem]]
 
+    #Sets the fraction to the top-heavy form of a given mixed fraction
     @mixed.setter
     def mixed(self, fraction):
+        #Fraction given in form [integerPart, [num, dem]]
         fraction[1][0] += fraction[0] * fraction[1][1]
         self.num = fraction[1][0]
         self.dem = fraction[1][1]
@@ -239,13 +283,13 @@ class Test:
 
         opType = self.kwargs['opType']
         if opType == 'add':
-            fraction3 = fraction1.addFraction(fraction2)
+            fraction3 = fraction1 + fraction2
         elif opType == 'subtract':
-            fraction3 = fraction1.subFraction(fraction2)
+            fraction3 = fraction1 - fraction2
         elif opType == 'multiply':
-            fraction3 = fraction1.timesFraction(fraction2)
+            fraction3 = fraction1 * fraction2
         elif opType == 'divide':
-            fraction3 = fraction1.divFraction(fraction2)
+            fraction3 = fraction1 / fraction2
 
         return fraction3.output()
 
@@ -317,6 +361,6 @@ def smartRound(num, decPlaces):
         
         
 if __name__ == '__main__':
-    test1 = Test('polynomial', polynomial='x^3 - 2x + 5', dictInput=False)
+    test1 = Test('fraction', opType='add', fraction1='3/4', fraction2='5/6')
     print(test1.test())
-    #print(test1.outputVars())
+    print(test1.outputVars())
