@@ -13,10 +13,7 @@ class Fraction:
             self.num = fraction_nums[0]
             self.dem = fraction_nums[1]
 
-        simplified = [x / self.GCD() for x in [self.num, self.dem]]
-        if [self.num, self.dem] != simplified:
-            self.num = simplified[0]
-            self.dem = simplified[1]
+        self.simplify()
 
     #Get the greatest common divisor of the numerator and denominator
     @property
@@ -36,14 +33,28 @@ class Fraction:
 
             remainder = num1 % num2
 
+        #print(f'GCD is {num2}') #debug
         return num2
 
     #Simplify the fraction
     def simplify(self):
-        GCD = self.GCD
+        num = self.num
+        dem = self.dem
 
-        self.num = int(self.num / GCD)
-        self.dem = int(self.dem / GCD)
+        #Ensure that negatives are represented in the numerator and there is no double negative
+        if dem < 0:
+            num = -num
+            dem = -dem
+
+        num /= self.GCD
+        dem /= self.GCD
+
+        self.num = int(num)
+        self.dem = int(dem)
+
+    #Simplify a given fraction in list form
+    def simplifyNums(nums):
+        return Fraction(nums, True).nums
 
     #Automatically simplify fractions
     def autoSimplify(func):
@@ -62,7 +73,6 @@ class Fraction:
         return self.num / self.dem
 
     #Adds another fraction to this one and returns a new fraction
-    @autoSimplify
     def __add__(self, fraction2):
         num = (self.num * fraction2.dem) + (self.dem * fraction2.num)
         dem = self.dem * fraction2.dem
@@ -70,7 +80,6 @@ class Fraction:
         return Fraction([num, dem], True)
 
     #Subtracts another fraction from this one and returns a new fraction
-    @autoSimplify
     def __sub__(self, fraction2):
         num = (self.num * fraction2.dem) - (self.dem * fraction2.num)
         dem = self.dem * fraction2.dem
@@ -78,7 +87,6 @@ class Fraction:
         return Fraction([num, dem], True)
 
     #Multiplies another fraction by this one and returns a new fraction
-    @autoSimplify
     def __mul__(self, fraction2):
         num = self.num * fraction2.num
         dem = self.dem * fraction2.dem
@@ -86,7 +94,6 @@ class Fraction:
         return Fraction([num, dem], True)
 
     #Divides this fraction by another one and returns a new fraction
-    @autoSimplify
     def __truediv__(self, fraction2):
         num = self.num * fraction2.dem
         dem = self.dem * fraction2.num
@@ -94,46 +101,53 @@ class Fraction:
         return Fraction([num, dem], True)
 
     #Adds this fraction to another one and replaces this fraction with the result
-    @autoSimplify
     def __iadd__(self, fraction2):
         num = (self.num * fraction2.dem) + (self.dem * fraction2.num)
         dem = self.dem * fraction2.dem
 
-        self.num = num
-        self.dem = dem
+        simplified = simplifyNums([num, dem])
+        
+        self.num = simplified[0]
+        self.dem = simplified[1]
         return self
 
     #Subtracts another fraction from this one and replaces this fraction with the result
-    @autoSimplify
     def __isub__(self, fraction2):
         num = (self.num * fraction2.dem) - (self.dem * fraction2.num)
         dem = self.dem * fraction2.dem
 
-        self.num = num
-        self.dem = dem
+        simplified = simplifyNums([num, dem])
+        
+        self.num = simplified[0]
+        self.dem = simplified[1]
         return self
 
     #Multiplies this fraction by another one and replaces this fraction with the result
-    @autoSimplify
     def __imul__(self, fraction2):
         num = self.num * fraction2.num
         dem = self.dem * fraction2.dem
 
-        self.num = num
-        self.dem = dem
+        simplified = simplifyNums([num, dem])
+        
+        self.num = simplified[0]
+        self.dem = simplified[1]
         return self
 
     #Divides this fraction by another one and replaces this fraction with the result
-    @autoSimplify
     def __itruediv__(self, fraction2):
         num = self.num * fraction2.dem
         dem = self.dem * fraction2.num
 
-        self.num = num
-        self.dem = dem
+        simplified = simplifyNums([num, dem])
+        
+        self.num = simplified[0]
+        self.dem = simplified[1]
         return self
 
-    #
+    #Flips this fraction between positive and negative
+    def __neg__(self):
+        self.num = -self.num
+        return self
     
     #Returns a mixed fraction
     @property
@@ -156,7 +170,8 @@ class Fraction:
         self.num = fraction[1][0]
         self.dem = fraction[1][1]
 
-    #return a list of the numerator and denominator
+    #Returns a list of the numerator and denominator
+    @property
     def nums(self):
         return ([self.num, self.dem])
         
@@ -361,6 +376,6 @@ def smartRound(num, decPlaces):
         
         
 if __name__ == '__main__':
-    test1 = Test('fraction', opType='add', fraction1='3/4', fraction2='5/6')
+    test1 = Test('fraction', opType='multiply', fraction1='3/4', fraction2='5/6')
     print(test1.test())
     print(test1.outputVars())
