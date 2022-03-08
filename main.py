@@ -174,7 +174,14 @@ class Fraction:
     @property
     def nums(self):
         return ([self.num, self.dem])
-        
+
+    #Updates the fraction through the use of nums
+    @nums.setter
+    def nums(self, numsList):
+        self.num = numsList[0]
+        self.dem = numsList[1]
+
+        self.simplify()
 
 class Polynomial:
     def __init__(self, polynomial, dictInput=False):
