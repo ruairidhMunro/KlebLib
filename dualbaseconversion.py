@@ -44,3 +44,7 @@ def convertToDualBase(num, base, ansInnerBase, ansOuterBase, innerSize):
         ans += convertBase(digit, ansOuterBase, ansInnerBase)
 
     return ans
+
+def convertBetweenDualBases(num, innerBase, outerBase, innerSize, ansInneBase, ansOuterBase, ansInnerSize):
+    temp = convertFromDualBase(num, innerBase, outerBase, innerSize, 6)
+    return convertToDualBase(temp, 6, ansInnerBase, ansOuterBase, ansInnerSize)
