@@ -36,13 +36,13 @@ class Test:
         return fraction3.output()
 
     def polynomialTest(self, args):
-        polynomial = polynomial.Polynomial(self.kwargs['polynomial'], dictInput=self.kwargs['dictInput'])
+        testPolynomial = polynomial.Polynomial(self.kwargs['polynomial'], dictInput=self.kwargs['dictInput'])
 
-        differentiated = polynomial.Polynomial(polynomial.differentiated, dictInput=True)
-        integrated = polynomial.Polynomial(polynomial.integrated, dictInput=True)
+        differentiated = testPolynomial.differentiate()
+        integrated = testPolynomial.integrate()
 
         return {
-            'polynomial': polynomial.output(),
+            'polynomial': testPolynomial.output(),
             'differentiated': differentiated.output(),
             'integrated': integrated.output()
         }
