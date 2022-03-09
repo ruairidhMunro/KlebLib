@@ -1,4 +1,4 @@
-from baseConversion import *
+from baseconversion import *
 
 def convertDualBaseDenary(num, innerBase, outerBase, innerSize):
     #Convert a number from a dual base to denary

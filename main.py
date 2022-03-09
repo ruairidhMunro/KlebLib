@@ -16,6 +16,10 @@ class Test:
             return self.fractionTest(args)
         elif self.testType == 'polynomial':
             return self.polynomialTest(args)
+        elif self.testType == 'baseConversion':
+            return self.conversionTest(args)
+        elif self.testType == 'universalAddition':
+            return self.universalAdditionTest(args)
 
     def outputVars(self):
         return {'testType': self.testType, 'kwargs': self.kwargs}
@@ -49,7 +53,20 @@ class Test:
             'differentiated': differentiated.output(),
             'integrated': integrated.output()
         }
-        
+
+    def conversionTest(self, args):
+        num = self.kwargs['num']
+        base = self.kwargs['base']
+        convertedBase = self.kwargs['baseToConvertTo']
+
+        return baseconversion.convertBase(num, base, convertedBase)
+
+    def universalAdditionTest(self, args):
+        num1 = self.kwargs['num1']
+        num2 = self.kwargs['num2']
+        base = self.kwargs['base']
+
+        return universaladdition.addNums(base, num1, num2)
         
 if __name__ == '__main__':
     test1 = Test('fraction', opType='multiply', fraction1='3/4', fraction2='5/6')
