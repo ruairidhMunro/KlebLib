@@ -52,3 +52,49 @@ class Polynomial:
                 polynomial[0] = float(term) * negativeMultiple
 
         return polynomial
+
+    @property
+    def differentiated(self):
+        polynomial = {}
+        for exponent, coefficient in self.polynomial.items():
+            if coefficient * exponent != 0:  #If the coefficient will not be 0
+                polynomial[exponent - 1] = coefficient * exponent
+
+        return polynomial
+
+    @differentiated.setter
+    def differentiated(self, polynomial):
+        self.polynomial = Polynomial(polynomial, dictInput=True).integrated
+
+    @property
+    def integrated(self):
+        polynomial = {}
+        for exponent, coefficient in self.polynomial.items():
+            polynomial[exponent + 1] = coefficient / (exponent + 1)
+
+        return polynomial
+
+    @integrated.setter
+    def integrated(self, polynomial):
+        self.polynomial = Polynomial(polynomial, dictInput=True).differentiated
+
+    '''Not doing this
+    @property
+    def roots(self):
+        roots = []
+        
+        return roots
+
+    @property
+    def turningPoints(self):
+        turningPoints = []
+        
+        return turningPoints
+    '''
+
+    def output(self, readable=False):
+        if readable:
+            #TODO output in readable format
+            pass
+        else:
+            return self.polynomial

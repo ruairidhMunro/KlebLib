@@ -46,8 +46,8 @@ class Test:
             'differentiated': differentiated.output(),
             'integrated': integrated.output()
         }
-
-
+        
+        
 if __name__ == '__main__':
     test1 = Test('fraction', opType='multiply', fraction1='3/4', fraction2='5/6')
     print(test1.test())
