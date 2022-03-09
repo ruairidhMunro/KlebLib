@@ -2,6 +2,9 @@
 import fraction
 import polynomial
 import rounding
+import universaladdition
+import baseconversion
+import dualbaseconversion
 
 class Test:
     def __init__(self, testType, **kwargs):
