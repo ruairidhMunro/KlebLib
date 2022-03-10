@@ -52,6 +52,6 @@ def ceiling(num, decPlaces=0):
     
 def smartRound(num, decPlaces):
     if str(num)[decPlaces + 1] >= 5:
-        return ceiling(num)
+        return ceiling(num, decPlaces)
     else:
-        return round(num, 0)
+        return round(num, decPlaces)
