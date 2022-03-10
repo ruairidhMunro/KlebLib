@@ -72,6 +72,44 @@ class Polynomial:
 
         return Polynomial(polynomial, True)
 
+    def __add__(self, other):
+        returnPolynomial = self.polynomial.copy()
+        for exponent, coefficient in other.polynomial.items():
+            if exponent in returnPolynomial.keys():
+                returnPolynomial[exponent] += coefficient
+            else:
+                returnPolynomial[exponent] = coefficient
+
+        return Polynomial(returnPolynomial, True)
+
+    def __sub__(self, other):
+        returnPolynomial = self.polynomial.copy()
+        for exponent, coefficient in other.polynomial.items():
+            if exponent in returnPolynomial.keys():
+                returnPolynomial[exponent] -= coefficient
+            else:
+                returnPolynomial[exponent] = -coefficient
+
+        return Polynomial(returnPolynomial, True)
+
+    def __iadd__(self, other):
+        for exponent, coefficient in other.polynomial.items():
+            if exponent in self.polynomial.keys():
+                self.polynomial[exponent] += coefficient
+            else:
+                self.polynomial[exponent] = coefficient
+
+        return self
+
+    def __isub__(self, other):
+        for exponent, coefficient in other.polynomial.items():
+            if exponent in self.polynomial.keys():
+                self.polynomial[exponent] -= coefficient
+            else:
+                self.polynomial[exponent] = -coefficient
+
+        return self
+
     '''Not doing this
     @property
     def roots(self):
