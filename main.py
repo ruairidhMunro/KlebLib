@@ -50,6 +50,7 @@ class Test:
 
         return {
             'polynomial': testPolynomial.output(),
+            'readable': testPolynomial.output(True),
             'differentiated': differentiated.output(),
             'integrated': integrated.output()
         }
@@ -69,6 +70,6 @@ class Test:
         return universaladdition.addNums(base, num1, num2)
         
 if __name__ == '__main__':
-    test1 = Test('polynomial', polynomial={3:5, 0:2}, dictInput = True)
+    test1 = Test('polynomial', polynomial={3:-5, 0:2}, dictInput = True)
     print(test1.test())
     print(test1.outputVars())

@@ -88,7 +88,26 @@ class Polynomial:
 
     def output(self, readable=False):
         if readable:
-            #TODO output in readable format
-            pass
+            output = ''
+            i = 0
+            for exponent, coefficient in self.polynomial.items():
+                if coefficient < 0:
+                    if i == 0:
+                        output += '-'
+                    else:
+                        output += ' - '
+                elif i != 0:
+                    output += ' + '
+
+                if exponent > 1 or exponent < 0:
+                    output += f'{abs(coefficient)}x^{exponent}'
+                elif exponent == 1:
+                    output += f'{abs(coefficient)}x'
+                else:
+                    output += f'{abs(coefficient)}'
+
+                i += 1
+
+            return output
         else:
             return self.polynomial
