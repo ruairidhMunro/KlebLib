@@ -6,5 +6,7 @@ KlebLib currently includes:
 * Fractions
 * Polynomials
 * Rounding
+* Base Conversion
+* Universal Addition
 
 Documentation here: https://github.com/Spartan2909/KlebLib/wiki
