@@ -149,6 +149,14 @@ class Fraction:
     def __neg__(self):
         self.num = -self.num
         return self
+
+    #Updates this fraction to its reciprocal
+    def invert(self):
+        num = self.num
+        self.num = self.dem
+        self.dem = num
+
+        return self
     
     #Returns a mixed fraction
     @property
