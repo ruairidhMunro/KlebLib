@@ -1,9 +1,13 @@
 class Fraction:
     def __init__(self, fraction, listInput=False):
         if listInput:
+            if not isinstance(fraction, list):
+                raise ValueError(f'Expected list, got {type(fraction)}')
             self.num = fraction[0]
             self.dem = fraction[1]
         else:
+            if not isinstance(fraction, str):
+                raise ValueError(f'Expected str, got {type(polynomial)}')
             fraction_nums = fraction.split('/')
             map_object = map(int, fraction_nums)
             fraction_nums = list(map_object)

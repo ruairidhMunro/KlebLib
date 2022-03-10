@@ -1,4 +1,10 @@
 def ceiling(num, decPlaces=0):
+    #Check validity of input
+    if not isinstance(num, int) and not isinstance(num, float):
+        raise ValueError(f'Expected int or float, got {type(num)}')
+    if not isinstance(decPlaces, int):
+        raise ValueError(f'Expected int, got {type(decPlaces)}')
+    
     #Set up variables
     overflow = False
     num = str(num)

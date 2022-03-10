@@ -3,8 +3,12 @@ import re
 class Polynomial:
     def __init__(self, polynomial, dictInput=False):
         if dictInput:
+            if not isinstance(polynomial, dict):
+                raise ValueError(f'Expected dict, got {type(polynomial)}')
             self.polynomial = polynomial
         else:
+            if not isinstance(polynomial, str):
+                raise ValueError(f'Expected str, got {type(polynomial)}')
             self.polynomial = self.parse(polynomial)
 
     def parse(self, polynomial):
@@ -59,14 +63,14 @@ class Polynomial:
             if coefficient * exponent != 0:  #If the coefficient will not be 0
                 polynomial[exponent - 1] = coefficient * exponent
 
-        return Polynomial(polynomial)
+        return Polynomial(polynomial, True)
 
-    def integrated(self):
+    def integrate(self):
         polynomial = {}
         for exponent, coefficient in self.polynomial.items():
             polynomial[exponent + 1] = coefficient / (exponent + 1)
 
-        return Polynomial(polynomial)
+        return Polynomial(polynomial, True)
 
     '''Not doing this
     @property

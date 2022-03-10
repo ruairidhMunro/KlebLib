@@ -2,6 +2,10 @@ from baseconversion import *
 from dualbaseconversion import *
 
 def addNums(base, *nums):
+    #Check validity of input
+    if not isinstance(base, int):
+        raise ValueError(f'Expected int, got {type(base)}')
+    
     #Set up nums
     nums = list(nums)
     if len(nums) < 2:
