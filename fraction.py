@@ -147,8 +147,7 @@ class Fraction:
 
     #Flips this fraction between positive and negative
     def __neg__(self):
-        self.num = -self.num
-        return self
+        return Fraction([-self.num, self.dem], True)
 
     #Updates this fraction to its reciprocal
     def invert(self):
