@@ -72,6 +72,17 @@ class Polynomial:
 
         return Polynomial(polynomial, True)
 
+    def integrateDefinite(self, min, max):
+        expr = self.integrate()
+        upper = lower = 0
+
+        for exponent, coefficient in expr.items():
+            upper += coefficient * max ** exponent
+            lower += coefficient * min ** exponent
+
+        result = max - min
+        return result
+
     def __add__(self, other):
         returnPolynomial = self.polynomial.copy()
         for exponent, coefficient in other.polynomial.items():
