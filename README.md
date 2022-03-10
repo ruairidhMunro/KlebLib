@@ -7,4 +7,4 @@ KlebLib currently includes:
 * Polynomials
 * Rounding
 
-Documentation here: https://github.com/Spartan2909/KlebLib/wiki/Docs
+Documentation here: https://github.com/Spartan2909/KlebLib/wiki
