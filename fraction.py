@@ -66,7 +66,7 @@ class Fraction:
         return inner
 
     #Output the numbers as a fraction
-    def output(self):
+    def __str__(self):
         return (f'{self.num}/{self.dem}')
 
     #Output the fraction as a float
