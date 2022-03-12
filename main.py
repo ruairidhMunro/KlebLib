@@ -70,6 +70,4 @@ class Test:
         return universaladdition.addNums(base, num1, num2)
         
 if __name__ == '__main__':
-    test1 = Test('polynomial', polynomial={3:-5, 0:2}, dictInput = True)
-    print(test1.test())
-    print(test1.outputVars())
+    testPolynomial = polynomial.Polynomial('3x^2 + 2x - 6y^5 + y', dictInput=False)
