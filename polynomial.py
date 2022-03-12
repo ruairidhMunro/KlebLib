@@ -14,8 +14,8 @@ class Polynomial:
     def parse(self, polynomial):
         #print(f'parsing polynomial {polynomial}') #debug
         negatives = []
-        additions = re.finditer('[\+-]', polynomial)
-        startNegative = re.search('^[\+-]', polynomial)
+        additions = re.finditer(r'[\+-]', polynomial)
+        startNegative = re.search(r'^[\+-]', polynomial)
 
         for i, match in enumerate(additions):
             if match.group() == '-':
@@ -24,7 +24,7 @@ class Polynomial:
                 else:
                     negatives.append(i + 1)
 
-        terms = re.split('[\+-]', polynomial)
+        terms = re.split(r'[\+-]', polynomial)
         if startNegative:
             #print('removed first term') # debug
             del terms[0]
@@ -51,7 +51,10 @@ class Polynomial:
                         polynomial[float(term[1])] = negativeMultiple
                 else:
                     term = term[:-1]
-                    polynomial[1] = float(term) * negativeMultiple
+                    if term: #If there is a coefficient
+                        polynomial[1] = float(term) * negativeMultiple
+                    else:
+                        polynomial[1] = 1
             else:
                 polynomial[0] = float(term) * negativeMultiple
 
