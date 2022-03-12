@@ -67,15 +67,15 @@ class SingleVarPolynomial:
                     term = term.split(f'{variable}^')
                     try:
                         polynomial[float(term[1])] = float(term[0]) * negativeMultiple
-                    except ValueError:
+                    except ValueError: #If there is no coefficient
                         polynomial[float(term[1])] = negativeMultiple
-                else:
+                else: #If it has no exponent
                     term = term[:-1]
                     if term: #If there is a coefficient
                         polynomial[1] = float(term) * negativeMultiple
                     else:
                         polynomial[1] = 1
-            else:
+            else: #If it is just a number
                 polynomial[0] = float(term) * negativeMultiple
 
             #print(f'parsed term {term}') #debug
@@ -119,7 +119,12 @@ class SingleVarPolynomial:
     
             return Polynomial(returnPolynomial, True)
         else:
-            pass
+            outputPolynomial = other.polynomials.copy()
+            if Polynomial.getVariables(self.polynomial)[0] in other.polynomials:
+                pass
+            else:
+                outputPolynomial[Polynomial.getVariables(self.polynomial)[0]] = self.polynomial
+                return Polynomial(outputPolynomial, True)
 
     def __sub__(self, other):
         if isinstance(other, SingleVarPolynomial):
@@ -132,7 +137,11 @@ class SingleVarPolynomial:
     
             return Polynomial(returnPolynomial, True)
         else:
-            pass
+            outputPolynomial = other.polynomials.copy()
+            if Polynomial.getVariables(self.polynomial)[0] in other.polynomials:
+                pass
+            else:
+                pass
 
     def __iadd__(self, other):
         if isinstance(other, SingleVarPolynomial):
@@ -144,7 +153,7 @@ class SingleVarPolynomial:
     
             return self
         else:
-            pass
+            raise TypeError('Cannot implicitly convert single variable polynomial to multi variable polynomial. Try using \'this = this + other\' instead')
 
     def __isub__(self, other):
         if isinstance(other, SingleVarPolynomial):
@@ -156,7 +165,7 @@ class SingleVarPolynomial:
     
             return self
         else:
-            pass
+            raise TypeError('Cannot implicitly convert single variable polynomial to multi variable polynomial. Try using \'this = this + other\' instead')
 
     def output(self, readable=False):
         if readable:
@@ -184,20 +193,21 @@ class SingleVarPolynomial:
         else:
             return self.polynomial
 
-class MultiVarPolynomial(SingleVarPolynomial):
+class MultiVarPolynomial:
     def __init__(self, polynomials, dictInput=False):
-        print(f'the polynomials are {polynomials} and are of type {type(polynomials)}') #debug
-        print(f'dictInput is {dictInput}') #debug
+        #print(f'the polynomials are {polynomials} and are of type {type(polynomials)}') #debug
+        #print(f'dictInput is {dictInput}') #debug
         if dictInput:
             self.polynomials = polynomials
         else:
             self.polynomials = self.parse(polynomials, Polynomial.getVariables(polynomials))
 
-        print(self.polynomials)
+        #print(self.polynomials) #debug
 
     def parse(self, polynomial, variables):
         print(f'multivar parsing {polynomial} with variables {variables}') #debug
 
+        output = {}
         negativesList = []
         negatives = {}
         additions = re.finditer(r'[\+-]', polynomial)
@@ -237,10 +247,40 @@ class MultiVarPolynomial(SingleVarPolynomial):
             except ValueError:
                 pass
             else:
-                terms['nums'].append(float(term))
+                terms['nums'].append(term)
                 if i in negativesList:
                     negatives['nums'].append(lenCurrentTerms)
                 lenCurrentTerms += 1
 
-        print(f'the terms are {terms}') #debug
-        print(f'the negatives are {negatives}') #debug
+        #print(f'the terms are {terms}') #debug
+        #print(f'the negatives are {negatives}') #debug
+
+        for variable, varTerms in terms.items():
+            print(f'parsing variable {variable} with terms {varTerms}')
+            if variable == 'nums':
+                output[variable] = []
+            else:
+                output[variable] = {}
+            if i in negatives[variable]:
+                negativeMultiple = -1
+            else:
+                negativeMultiple = 1
+            
+            for term in varTerms:
+                if variable in term:
+                    if '^' in term:
+                        term = term.split(f'{variable}^')
+                        try:
+                            output[variable][float(term[1])] = float(term[0]) * negativeMultiple
+                        except ValueError: #If there is no coefficient
+                            output[variable][float(term[1])] = negativeMultiple
+                    else: #If it has no exponent
+                        term = term[:-1]
+                        if term: #If there is a coefficient
+                            output[variable][1] = float(term) * negativeMultiple
+                        else:
+                            output[variable][1] = 1
+                else: #If it is just a number
+                    output[variable].append(float(term) * negativeMultiple)
+
+        return output
