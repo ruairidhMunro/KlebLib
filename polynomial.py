@@ -29,14 +29,14 @@ class SingleVarPolynomial:
         else:
             if not isinstance(polynomial, str):
                 raise ValueError(f'Expected str, got {type(polynomial)}')
-            self.polynomial = self.parse(polynomial)
+            variable = Polynomial.getVariables(polynomial)[0]
+            self.polynomial = self.parse(polynomial, variable)
 
-    def parse(self, polynomial):
+    def parse(self, polynomial, variable):
         #print(f'parsing polynomial {polynomial}') #debug
         negatives = []
         additions = re.finditer(r'[\+-]', polynomial)
         startNegative = re.search(r'^[\+-]', polynomial)
-        variable = Polynomial.getVariables(polynomial)[0]
 
         for i, match in enumerate(additions):
             if match.group() == '-':
@@ -158,20 +158,6 @@ class SingleVarPolynomial:
         else:
             pass
 
-    '''Not doing this
-    @property
-    def roots(self):
-        roots = []
-        
-        return roots
-
-    @property
-    def turningPoints(self):
-        turningPoints = []
-        
-        return turningPoints
-    '''
-
     def output(self, readable=False):
         if readable:
             output = ''
@@ -209,5 +195,52 @@ class MultiVarPolynomial(SingleVarPolynomial):
 
         print(self.polynomials)
 
-    def parse(self, polynomial, *variables):
-        print(f'multivar parsing {polynomial} with variables {variables}')
+    def parse(self, polynomial, variables):
+        print(f'multivar parsing {polynomial} with variables {variables}') #debug
+
+        negativesList = []
+        negatives = {}
+        additions = re.finditer(r'[\+-]', polynomial)
+        startNegative = re.search(r'^[\+-]', polynomial)
+
+        for i, match in enumerate(additions):
+            if match.group() == '-':
+                if startNegative:
+                    negativesList.append(i)
+                else:
+                    negativesList.append(i + 1)
+
+        termsList = re.split(r'[\+-]', polynomial)
+        if startNegative:
+            #print('removed first term') # debug
+            del terms[0]
+        terms = {}
+        for variable in variables:
+            terms[variable] = []
+            negatives[variable] = []
+            lenCurrentTerms = 0
+            
+            for i, term in enumerate(termsList):
+                if variable in term:
+                    terms[variable].append(term.strip())
+                    if i in negativesList:
+                        negatives[variable].append(lenCurrentTerms)
+                    lenCurrentTerms += 1
+
+        terms['nums'] = []
+        negatives['nums'] = []
+        lenCurrentTerms = 0
+        
+        for i, term in enumerate(termsList):
+            try:
+                float(term)
+            except ValueError:
+                pass
+            else:
+                terms['nums'].append(float(term))
+                if i in negativesList:
+                    negatives['nums'].append(lenCurrentTerms)
+                lenCurrentTerms += 1
+
+        print(f'the terms are {terms}') #debug
+        print(f'the negatives are {negatives}') #debug
