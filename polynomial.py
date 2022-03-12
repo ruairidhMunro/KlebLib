@@ -36,6 +36,7 @@ class SingleVarPolynomial:
         negatives = []
         additions = re.finditer(r'[\+-]', polynomial)
         startNegative = re.search(r'^[\+-]', polynomial)
+        variable = Polynomial.getVariables(polynomial)[0]
 
         for i, match in enumerate(additions):
             if match.group() == '-':
@@ -61,16 +62,16 @@ class SingleVarPolynomial:
             else:
                 negativeMultiple = 1
 
-            if 'x' in term:
+            if variable in term:
                 if '^' in term:
-                    term = term.split('x^')
+                    term = term.split(f'{variable}^')
                     try:
                         polynomial[float(term[1])] = float(term[0]) * negativeMultiple
                     except ValueError:
                         polynomial[float(term[1])] = negativeMultiple
                 else:
                     term = term[:-1]
-                    if term:
+                    if term: #If there is a coefficient
                         polynomial[1] = float(term) * negativeMultiple
                     else:
                         polynomial[1] = 1
@@ -199,16 +200,14 @@ class SingleVarPolynomial:
 
 class MultiVarPolynomial(SingleVarPolynomial):
     def __init__(self, polynomials, dictInput=False):
-        print(f'the polynomials are {polynomials}') #debug
+        print(f'the polynomials are {polynomials} and are of type {type(polynomials)}') #debug
         print(f'dictInput is {dictInput}') #debug
         if dictInput:
             self.polynomials = polynomials
         else:
-            self.polynomials = self.parse(polynomials, self.getVariables(polynomials))
+            self.polynomials = self.parse(polynomials, Polynomial.getVariables(polynomials))
 
         print(self.polynomials)
 
     def parse(self, polynomial, *variables):
         print(f'multivar parsing {polynomial} with variables {variables}')
-
-    getVariables = Polynomial.getVariables
