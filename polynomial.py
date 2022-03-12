@@ -124,20 +124,6 @@ class Polynomial:
 
         return self
 
-    '''Not doing this
-    @property
-    def roots(self):
-        roots = []
-        
-        return roots
-
-    @property
-    def turningPoints(self):
-        turningPoints = []
-        
-        return turningPoints
-    '''
-
     def output(self, readable=False):
         if readable:
             output = ''
