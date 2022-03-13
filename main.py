@@ -70,4 +70,7 @@ class Test:
         return universaladdition.addNums(base, num1, num2)
         
 if __name__ == '__main__':
-    testPolynomial = polynomial.Polynomial('3x^2 - 2x + 6y^5 + y - 3', dictInput=False)
+    polynomial1 = polynomial.Polynomial('3x^2 - 2x + 6y^5 + y - 3')
+    polynomial2 = polynomial.Polynomial({'x': {3: -2, 1: 3}, 'z': {7: 4}, 'num': 9})
+    polynomial3 = polynomial1 - polynomial2
+    print(polynomial3)
