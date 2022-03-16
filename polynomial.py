@@ -44,7 +44,7 @@ class Polynomial:
                 negativeMultiple = 1
                         
             for variable in self.getVariables(term):
-                if '^' in term:
+                if f'{variable}^' in term:
                     currentTerm[variable] = self.trimNum(term, 'right')
                             
                 else: #If it has no exponent
