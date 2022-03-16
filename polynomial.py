@@ -3,8 +3,7 @@ import re
 class Polynomial:
     def __init__(self, polynomial):
         #print(f'the polynomials are {polynomials} and are of type {type(polynomials)}') #debug
-        #print(f'dictInput is {dictInput}') #debug
-        if type(polynomial) is dict:
+        if type(polynomial) is list:
             self.polynomial = polynomial
         else:
             self.polynomial = self.parse(polynomial, self.getVariables(polynomial))
@@ -13,82 +12,52 @@ class Polynomial:
     def parse(self, polynomial, variables):
         #print(f'multivar parsing {polynomial} with variables {variables}') #debug
 
-        output = {}
-        negativesList = []
-        negatives = {}
+        output = []
+        negatives = []
         additions = re.finditer(r'[\+-]', polynomial)
         startNegative = re.search(r'^[\+-]', polynomial)
 
         for i, match in enumerate(additions):
             if match.group() == '-':
                 if startNegative:
-                    negativesList.append(i)
+                    negatives.append(i)
                 else:
-                    negativesList.append(i + 1)
+                    negatives.append(i + 1)
 
-        termsList = re.split(r'[\+-]', polynomial)
+        terms = re.split(r'[\+-]', polynomial)
         if startNegative:
             #print('removed first term') # debug
             del terms[0]
-        terms = {}
-        for variable in variables:
-            terms[variable] = []
-            negatives[variable] = []
-            lenCurrentTerms = 0
-            
-            for i, term in enumerate(termsList):
-                if variable in term:
-                    terms[variable].append(term.strip())
-                    if i in negativesList:
-                        negatives[variable].append(lenCurrentTerms)
-                    lenCurrentTerms += 1
-
-        terms['num'] = 0
-        lenCurrentTerms = 0
-        
-        for i, term in enumerate(termsList):
-            try:
-                float(term)
-            except ValueError:
-                pass
-            else:        
-                if i in negativesList:
-                    terms['num'] -= float(term)
-                else:
-                    terms['num'] += float(term)
-                lenCurrentTerms += 1
 
         #print(f'the terms are {terms}') #debug
         #print(f'the negatives are {negatives}') #debug
 
-        for variable, varTerms in terms.items():
-            #print(f'parsing variable {variable} with terms {varTerms}')
-            if variable == 'num':
-                output[variable] = terms['num']
-            else:
-                output[variable] = {}
+        for i, term in enumerate(terms):
+            term = term.strip()
+            #print(f'parsing term {term} at position {i}') #debug
+            
+            currentTerm = {}
                 
-                for i, term in enumerate(varTerms):
-                    if i in negatives[variable]:
-                        negativeMultiple = -1
-                    else:
-                        negativeMultiple = 1
+            if i in negatives:
+                negativeMultiple = -1
+            else:
+                negativeMultiple = 1
                         
-                    if variable in term:
-                        if '^' in term:
-                            term = term.split(f'{variable}^')
-                            try:
-                                output[variable][float(term[1])] = float(term[0]) * negativeMultiple
-                            except ValueError: #If there is no coefficient
-                                output[variable][float(term[1])] = negativeMultiple
-                        else: #If it has no exponent
-                            term = term[:-1]
-                            if term: #If there is a coefficient
-                                output[variable][1] = float(term) * negativeMultiple
-                            else:
-                                output[variable][1] = 1
-                    else: #If it is just a number
-                        output[variable].append(float(term) * negativeMultiple)
+            for variable in self.getVariables(term):
+                if '^' in term:
+                    currentTerm[variable] = self.trimNum(term, 'right')
+                            
+                else: #If it has no exponent
+                    currentTerm[variable] = 1
+
+            trimmed = self.trimNum(term, 'left')
+            if trimmed: #If there is a coefficient
+                currentTerm['num'] = trimmed * negativeMultiple
+            else:
+                currentTerm['num'] = negativeMultiple
+
+            if currentTerm:
+                output.append(currentTerm)
 
         return output
 
@@ -104,6 +73,44 @@ class Polynomial:
             return []
 
         return list(variables)
+
+    def trimNum(self, string, side):
+        #print(f'trimming {string}') #debug
+        if side == 'left':
+            lastChar = 0
+            for i, char in enumerate(string):
+                try:
+                    float(char)
+                except ValueError:
+                    break
+                else:
+                    lastChar = i
+
+            try:
+                #print(f'joining {string[0:lastChar+1]} after {side} trim') #debug
+                return float(''.join(string[0:lastChar+1]))
+            except ValueError:
+                return None
+
+        else:
+            tempString = string[::1]
+            lastChar = len(string) - 1
+
+            i = lastChar
+            for char in tempString:
+                try:
+                    float(char)
+                except ValueError:
+                    break
+                else:
+                    lastChar = i
+                i -= 1
+
+            try:
+                #print(f'joining {string[lastChar:]} after {side} trim') #debug
+                return float(''.join(string[lastChar:]))
+            except ValueError:
+                return None
 
     def differentiate(self, partial=False, varToDiff=''):
         polynomial = {}
@@ -222,6 +229,7 @@ class Polynomial:
         return self
 
     def __str__(self):
+        '''
         output = ''
 
         i = 0
@@ -236,7 +244,8 @@ class Polynomial:
                     output += str(self.intIfPos(terms))
 
                 i += 1
-
+            elif variable == 'links':
+                pass
             else:
                 for exponent, coefficient in terms.items():
                     if coefficient < 0:
@@ -259,6 +268,9 @@ class Polynomial:
                             output += variable
         
                     i += 1
+        '''
+
+        output = str(self.polynomial)
 
         return output
 
