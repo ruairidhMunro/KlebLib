@@ -61,57 +61,6 @@ class Polynomial:
 
         return output
 
-    def getVariables(self, polynomial):
-        variables = set()
-        try:
-            for character in polynomial:
-                #If it is a letter
-                if (ord(character) >= 65 and ord(character) <= 90) or (ord(character) >= 97 and ord(character) <= 122):
-                    variables.add(character)
-        #If polynomial is not a string
-        except TypeError:
-            return []
-
-        return list(variables)
-
-    def trimNum(self, string, side):
-        #print(f'trimming {string}') #debug
-        if side == 'left':
-            lastChar = 0
-            for i, char in enumerate(string):
-                try:
-                    float(char)
-                except ValueError:
-                    break
-                else:
-                    lastChar = i
-
-            try:
-                #print(f'joining {string[0:lastChar+1]} after {side} trim') #debug
-                return float(''.join(string[0:lastChar+1]))
-            except ValueError:
-                return None
-
-        else:
-            tempString = string[::1]
-            lastChar = len(string) - 1
-
-            i = lastChar
-            for char in tempString:
-                try:
-                    float(char)
-                except ValueError:
-                    break
-                else:
-                    lastChar = i
-                i -= 1
-
-            try:
-                #print(f'joining {string[lastChar:]} after {side} trim') #debug
-                return float(''.join(string[lastChar:]))
-            except ValueError:
-                return None
-
     def differentiate(self, partial=False, varToDiff=''):
         polynomial = {}
         for exponent, coefficient in self.polynomial.items():
@@ -139,94 +88,26 @@ class Polynomial:
         return result
 
     def __add__(self, other):
+        print(f'adding polynomials {self} and {other}') #debug
         outputPolynomial = self.polynomial.copy()
-        for variable, terms in other.polynomial.items():
-            #print('adding polynomials') #debug
-            #print(f'the variable is {variable}') #debug
-            #print(f'the terms are {terms}') #debug
-            
-            if variable in self.polynomial.keys():
-                if variable == 'num':
-                    outputPolynomial['num'] += other.polynomial['num']
-                else:
-                    for exponent, coefficient in terms.items():
-                        if exponent in self.polynomial[variable]:
-                            outputPolynomial[variable][exponent] += coefficient
-                        else:
-                            outputPolynomial[variable][exponent] = coefficient
+        for i, term in enumerate(other.polynomial.copy()):
+            print(f'adding term {term} to polynomial {outputPolynomial}') #debug
+            location = self.locate(outputPolynomial.copy(), term.copy())
+            if location:
+                outputPolynomial[location]['num'] += term['num']
             else:
-                outputPolynomial[variable] = terms
+                outputPolynomial.append(term.copy())
 
         return Polynomial(outputPolynomial)
 
     def __sub__(self, other):
-        outputPolynomial = self.polynomial.copy()
-        for variable, terms in other.polynomial.items():
-            #print('subtracting polynomials') #debug
-            #print(f'the variable is {variable}') #debug
-            #print(f'the terms are {terms}') #debug
-            
-            if variable in self.polynomial.keys():
-                if variable == 'num':
-                    outputPolynomial['num'] -= other.polynomial['num']
-                else:
-                    for exponent, coefficient in terms.items():
-                        if exponent in self.polynomial[variable]:
-                            outputPolynomial[variable][exponent] -= coefficient
-                        else:
-                            outputPolynomial[variable][exponent] = -coefficient
-            else:
-                outputPolynomial[variable] = {}
-                for exponent, coefficient in terms.items():
-                    outputPolynomial[variable][exponent] = -coefficient
-
-        return Polynomial(outputPolynomial)
+        pass
 
     def __iadd__(self, other):
-        outputPolynomial = self.polynomial.copy()
-        for variable, terms in other.polynomial.items():
-            #print('adding polynomials') #debug
-            #print(f'the variable is {variable}') #debug
-            #print(f'the terms are {terms}') #debug
-            
-            if variable in self.polynomial.keys():
-                if variable == 'num':
-                    outputPolynomial['num'] += other.polynomial['num']
-                else:
-                    for exponent, coefficient in terms.items():
-                        if exponent in self.polynomial[variable]:
-                            outputPolynomial[variable][exponent] += coefficient
-                        else:
-                            outputPolynomial[variable][exponent] = coefficient
-            else:
-                outputPolynomial[variable] = terms
-
-        self.polynomial = outputPolynomial
-        return self
+        pass
 
     def __isub__(self, other):
-        outputPolynomial = self.polynomial.copy()
-        for variable, terms in other.polynomial.items():
-            #print('subtracting polynomials') #debug
-            #print(f'the variable is {variable}') #debug
-            #print(f'the terms are {terms}') #debug
-            
-            if variable in self.polynomial.keys():
-                if variable == 'num':
-                    outputPolynomial['num'] -= other.polynomial['num']
-                else:
-                    for exponent, coefficient in terms.items():
-                        if exponent in self.polynomial[variable]:
-                            outputPolynomial[variable][exponent] -= coefficient
-                        else:
-                            outputPolynomial[variable][exponent] = -coefficient
-            else:
-                outputPolynomial[variable] = {}
-                for exponent, coefficient in terms.items():
-                    outputPolynomial[variable][exponent] = -coefficient
-
-        self.polynomial = outputPolynomial
-        return self
+        pass
 
     def __str__(self):
         '''
@@ -279,3 +160,65 @@ class Polynomial:
             return int(num)
         else:
             return(num)
+
+    def getVariables(self, polynomial):
+        variables = set()
+        try:
+            for character in polynomial:
+                #If it is a letter
+                if (ord(character) >= 65 and ord(character) <= 90) or (ord(character) >= 97 and ord(character) <= 122):
+                    variables.add(character)
+        #If polynomial is not a string
+        except TypeError:
+            return []
+
+        return list(variables)
+
+    def trimNum(self, string, side):
+        #print(f'trimming {string}') #debug
+        if side == 'left':
+            lastChar = 0
+            for i, char in enumerate(string):
+                try:
+                    float(char)
+                except ValueError:
+                    break
+                else:
+                    lastChar = i
+
+            try:
+                #print(f'joining {string[0:lastChar+1]} after {side} trim') #debug
+                return float(''.join(string[0:lastChar+1]))
+            except ValueError:
+                return None
+
+        else:
+            tempString = string[::1]
+            lastChar = len(string) - 1
+
+            i = lastChar
+            for char in tempString:
+                try:
+                    float(char)
+                except ValueError:
+                    break
+                else:
+                    lastChar = i
+                i -= 1
+
+            try:
+                #print(f'joining {string[lastChar:]} after {side} trim') #debug
+                return float(''.join(string[lastChar:]))
+            except ValueError:
+                return None
+
+    def locate(self, polynomial, searchTerm):
+        print(f'locating term {searchTerm} in polynomial {polynomial}') #debug
+        del searchTerm['num']
+        for i, term in enumerate(polynomial):
+            del term['num']
+            if searchTerm == term:
+                print(f'found term') #debug
+                return i
+        print('didn\'t find term') #debug
+        return False
