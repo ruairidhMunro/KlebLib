@@ -1,10 +1,9 @@
 #By Caleb Robson
-import fraction
-import polynomial
-import rounding
-import universaladdition
-import baseconversion
-import dualbaseconversion
+import KlebLib.fraction as fraction
+import KlebLib.polynomial as polynomial
+import KlebLib.rounding as rounding
+import KlebLib.universaladdition as universaladdition 
+import KlebLib.baseconversion as baseconversion 
 
 class Test:
     def __init__(self, testType, **kwargs):
