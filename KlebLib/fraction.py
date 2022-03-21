@@ -1,18 +1,17 @@
 class Fraction:
     def __init__(self, fraction, listInput=False):
-        if listInput:
-            if not isinstance(fraction, list):
-                raise ValueError(f'Expected list, got {type(fraction)}')
+        if isinstance(fraction, list):
             self.num = fraction[0]
             self.dem = fraction[1]
+            
+        elif isinstance(fraction, str):
+            fractionNums = fraction.split('/')
+            fractionNums = [int(i) for i in fractionNums]
+            self.num = fractionNums[0]
+            self.dem = fractionNums[1]
+            
         else:
-            if not isinstance(fraction, str):
-                raise ValueError(f'Expected str, got {type(polynomial)}')
-            fraction_nums = fraction.split('/')
-            map_object = map(int, fraction_nums)
-            fraction_nums = list(map_object)
-            self.num = fraction_nums[0]
-            self.dem = fraction_nums[1]
+            raise TypeError(f'expected type \'str\' or \'list\', got {type(fraction)}')
 
         self.simplify()
 
@@ -78,28 +77,28 @@ class Fraction:
         num = (self.num * fraction2.dem) + (self.dem * fraction2.num)
         dem = self.dem * fraction2.dem
 
-        return Fraction([num, dem], True)
+        return Fraction([num, dem])
 
     #Subtracts another fraction from this one and returns a new fraction
     def __sub__(self, fraction2):
         num = (self.num * fraction2.dem) - (self.dem * fraction2.num)
         dem = self.dem * fraction2.dem
 
-        return Fraction([num, dem], True)
+        return Fraction([num, dem])
 
     #Multiplies another fraction by this one and returns a new fraction
     def __mul__(self, fraction2):
         num = self.num * fraction2.num
         dem = self.dem * fraction2.dem
 
-        return Fraction([num, dem], True)
+        return Fraction([num, dem])
 
     #Divides this fraction by another one and returns a new fraction
     def __truediv__(self, fraction2):
         num = self.num * fraction2.dem
         dem = self.dem * fraction2.num
 
-        return Fraction([num, dem], True)
+        return Fraction([num, dem])
 
     #Adds this fraction to another one and replaces this fraction with the result
     def __iadd__(self, fraction2):
@@ -147,7 +146,7 @@ class Fraction:
 
     #Flips this fraction between positive and negative
     def __neg__(self):
-        return Fraction([-self.num, self.dem], True)
+        return Fraction([-self.num, self.dem])
 
     #Updates this fraction to its reciprocal
     def invert(self):

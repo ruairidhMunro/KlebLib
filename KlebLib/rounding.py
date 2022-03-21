@@ -8,9 +8,7 @@ def ceiling(num, decPlaces=0):
     #Set up variables
     overflow = False
     num = str(num)
-    numDigits = []
-    for digit in num:
-        numDigits.append(digit)
+    numDigits = [i for i in num]
     decPoint = numDigits.index('.')
 
     #Removes the decimal point and finds the last decimal place that will remain
