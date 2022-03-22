@@ -1,6 +1,6 @@
 #By Caleb Robson
 import fraction
-import polynomial
+import KlebLib.polynomial as polynomial
 import rounding
 import universaladdition
 import baseconversion

@@ -88,10 +88,10 @@ class Polynomial:
         return result
 
     def __add__(self, other):
-        print(f'adding polynomials {self} and {other}') #debug
+        #print(f'adding polynomials {self} and {other}') #debug
         outputPolynomial = self.polynomial.copy()
-        for i, term in enumerate(other.polynomial.copy()):
-            print(f'adding term {term} to polynomial {outputPolynomial}') #debug
+        for i, term in enumerate(other.polynomial):
+            #print(f'adding term {term} to polynomial {outputPolynomial}') #debug
             location = self.locate(outputPolynomial.copy(), term.copy())
             if location:
                 outputPolynomial[location]['num'] += term['num']
@@ -101,58 +101,80 @@ class Polynomial:
         return Polynomial(outputPolynomial)
 
     def __sub__(self, other):
-        pass
+        #print(f'subtracting polynomial {other} from {self}') #debug
+        outputPolynomial = self.polynomial.copy()
+        for i, term in enumerate(other.polynomial):
+            #print(f'subtracting term {term} from polynomial {outputPolynomial}') #debug
+            location = self.locate(outputPolynomial.copy(), term.copy())
+            if location:
+                outputPolynomial[location]['num'] -= term['num']
+            else:
+                currentTerm = {}
+                for variable, exponent in term:
+                    if variable == 'num':
+                        currentTerm['num'] = -exponent
+                    else:
+                        currentTerm['variable'] = exponent
+                outputPolynomial.append(currentTerm)
+
+        return Polynomial(outputPolynomial)
 
     def __iadd__(self, other):
-        pass
+        #print(f'adding polynomials {self} and {other}') #debug
+        outputPolynomial = self.polynomial.copy()
+        for i, term in enumerate(other.polynomial):
+            #print(f'adding term {term} to polynomial {outputPolynomial}') #debug
+            location = self.locate(outputPolynomial.copy(), term.copy())
+            if location:
+                outputPolynomial[location]['num'] += term['num']
+            else:
+                outputPolynomial.append(term.copy())
+
+        self.polynomial = outputPolynomial
+        return self
 
     def __isub__(self, other):
-        pass
+        #print(f'subtracting polynomial {other} from {self}') #debug
+        outputPolynomial = self.polynomial.copy()
+        for i, term in enumerate(other.polynomial):
+            #print(f'suntracting term {term} from polynomial {outputPolynomial}') #debug
+            location = self.locate(outputPolynomial.copy(), term.copy())
+            if location:
+                outputPolynomial[location]['num'] -= term['num']
+            else:
+                currentTerm = {}
+                for variable, exponent in term:
+                    if variable == 'num':
+                        currentTerm['num'] = -exponent
+                    else:
+                        currentTerm['variable'] = exponent
+                outputPolynomial.append(currentTerm)
+
+        self.polynomial = outputPolynomial
+        return self
 
     def __str__(self):
-        '''
         output = ''
 
         i = 0
-        for variable, terms in self.polynomial.items():
-            if variable == 'num':
-                if terms < 0:
-                    if i == 0:
-                        output += str(self.intIfPos(terms))
-                    else:
-                        output += f' - {self.intIfPos(abs(terms))}'
+        for term in self.polynomial:
+            if term['num'] < 0:
+                if i == 0:
+                    output += f'-{self.intIfPos(abs(term["num"]))}'
                 else:
-                    output += str(self.intIfPos(terms))
+                    output += f' - {self.intIfPos(abs(term["num"]))}'
+            elif i != 0:
+                output += f' + {self.intIfPos(term["num"])}'
 
-                i += 1
-            elif variable == 'links':
-                pass
-            else:
-                for exponent, coefficient in terms.items():
-                    if coefficient < 0:
-                        if i == 0:
-                            output += '-'
-                        else:
-                            output += ' - '
-                    elif i != 0:
-                        output += ' + '
-        
-                    if exponent > 1 or exponent < 0:
-                        if coefficient != 1:
-                            output += f'{self.intIfPos(abs(coefficient))}{variable}^{self.intIfPos(exponent)}'
-                        else:
-                            output += f'{variable}^{self.intIfPos(exponent)}'
-                    elif exponent == 1:
-                        if coefficient != 1:
-                            output += f'{self.intIfPos(abs(coefficient))}{variable}'
-                        else:
-                            output += variable
-        
-                    i += 1
-        '''
-
-        output = str(self.polynomial)
-
+            i += 1
+                
+            for variable, exponent in term.items():
+                if variable != 'num':
+                    if exponent == 1:
+                        output += str(variable)
+                    else:
+                        output += f'({variable}^{self.intIfPos(exponent)})'
+                
         return output
 
     def intIfPos(self, num):
@@ -213,12 +235,13 @@ class Polynomial:
                 return None
 
     def locate(self, polynomial, searchTerm):
-        print(f'locating term {searchTerm} in polynomial {polynomial}') #debug
+        #print(f'locating term {searchTerm} in polynomial {polynomial}') #debug
         del searchTerm['num']
         for i, term in enumerate(polynomial):
-            del term['num']
-            if searchTerm == term:
-                print(f'found term') #debug
+            termToEdit = term.copy()
+            del termToEdit['num']
+            if searchTerm == termToEdit:
+                #print('found term') #debug
                 return i
-        print('didn\'t find term') #debug
+        #print('didn\'t find term') #debug
         return False
