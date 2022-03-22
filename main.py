@@ -74,5 +74,5 @@ if __name__ == '__main__':
     polynomial2 = polynomial.Polynomial(
         [{'x': 3, 'num': -2}, {'x': 1, 'num': 3}, {'z': 7, 'num': 4}, {'x': 1, 'z': 2, 'num': 9}]
     )
-    polynomial3 = polynomial1 + polynomial2
+    polynomial3 = polynomial1 - polynomial2
     print(polynomial3)

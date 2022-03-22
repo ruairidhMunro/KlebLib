@@ -110,11 +110,11 @@ class Polynomial:
                 outputPolynomial[location]['num'] -= term['num']
             else:
                 currentTerm = {}
-                for variable, exponent in term:
+                for variable, exponent in term.items():
                     if variable == 'num':
                         currentTerm['num'] = -exponent
                     else:
-                        currentTerm['variable'] = exponent
+                        currentTerm[variable] = exponent
                 outputPolynomial.append(currentTerm)
 
         return Polynomial(outputPolynomial)
@@ -143,11 +143,11 @@ class Polynomial:
                 outputPolynomial[location]['num'] -= term['num']
             else:
                 currentTerm = {}
-                for variable, exponent in term:
+                for variable, exponent in term.items():
                     if variable == 'num':
                         currentTerm['num'] = -exponent
                     else:
-                        currentTerm['variable'] = exponent
+                        currentTerm[variable] = exponent
                 outputPolynomial.append(currentTerm)
 
         self.polynomial = outputPolynomial
