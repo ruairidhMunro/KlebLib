@@ -13,6 +13,7 @@ class Polynomial:
         #print(f'multivar parsing {polynomial} with variables {variables}') #debug
 
         output = []
+        #print(f'parsing polynomial {polynomial
         negatives = []
         additions = re.finditer(r'[\+-]', polynomial)
         startNegative = re.search(r'^[\+-]', polynomial)
@@ -38,6 +39,7 @@ class Polynomial:
             
             currentTerm = {}
                 
+            #Check if term should be negative
             if i in negatives:
                 negativeMultiple = -1
             else:
