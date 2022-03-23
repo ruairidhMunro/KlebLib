@@ -61,31 +61,75 @@ class Polynomial:
 
         return output
 
-    def differentiate(self, partial=False, varToDiff=''):
-        polynomial = {}
-        for exponent, coefficient in self.polynomial.items():
-            if coefficient * exponent != 0:  #If the coefficient will not be 0
-                polynomial[exponent - 1] = coefficient * exponent
+    def differentiate(self, varToDiff):
+        outputPolynomial = []
+        for term in self.polynomial:
+            termToEdit = {}
+            edited = False
+            for variable, exponent in term.items():
+                if variable == varToDiff:
+                    termToEdit['num'] = term['num'] * exponent
+                    if exponent - 1 != 0:
+                        termToEdit[variable] = exponent - 1
+                    edited = True
+                elif variable != 'num':
+                    termToEdit[variable] = exponent
+            if not edited:
+                termToEdit['num'] = term['num']
 
-        return Polynomial(polynomial, True)
+            outputPolynomial.append(termToEdit)
 
-    def integrate(self, varToIntegrate=''):
-        polynomial = {}
-        for exponent, coefficient in self.polynomial.items():
-            polynomial[exponent + 1] = coefficient / (exponent + 1)
+        return Polynomial(outputPolynomial)
 
-        return Polynomial(polynomial, True)
+    def integrate(self, varToIntegrate):
+        outputPolynomial = []
+        for term in self.polynomial:
+            termToEdit = {}
+            edited = False
+            for variable, exponent in term.items():
+                if variable == varToIntegrate:
+                    termToEdit['num'] = term['num'] / (exponent + 1)
+                    termToEdit[variable] = exponent + 1
+                    edited = True
+                elif variable != 'num':
+                    termToEdit[variable] = exponent
+            if not edited:
+                termToEdit['num'] = term['num']
+                termToEdit[varToIntegrate] = 1
 
-    def integrateDefinite(self, min, max):
-        expr = self.integrate()
-        upper = lower = 0
+            outputPolynomial.append(termToEdit)
 
-        for exponent, coefficient in expr.items():
-            upper += coefficient * max ** exponent
-            lower += coefficient * min ** exponent
+        return Polynomial(outputPolynomial)
 
-        result = max - min
-        return result
+    def integrateDefinite(self, varToIntegrate, max, min):
+        integrated = self.integrate(varToIntegrate)
+        outputs = [[], []]
+        limits = [max, min]
+
+        for i, output in enumerate(outputs):
+            for term in integrated.polynomial:
+                outputTerm = {}
+                edited = False
+                for variable, exponent in term.items():
+                    if variable == varToIntegrate:
+                        outputTerm['num'] = term['num'] * limits[i] ** exponent
+                        edited = True
+                    elif variable != 'num':
+                        outputTerm[variable] = exponent
+
+                if not edited:
+                    outputTerm['num'] = term['num']
+
+                output.append(outputTerm)
+
+            #print(f'output {i} before cleanup is {output}') #debug
+            output = self.consolidate(output)
+            #print(f'output {i} after cleanup is {output}') #debug
+
+        upper = Polynomial(outputs[0])
+        lower = Polynomial(outputs[1])
+
+        return upper - lower
 
     def __add__(self, other):
         #print(f'adding polynomials {self} and {other}') #debug
@@ -98,7 +142,7 @@ class Polynomial:
             else:
                 outputPolynomial.append(term.copy())
 
-        return Polynomial(outputPolynomial)
+        return Polynomial(self.consolidate(outputPolynomial))
 
     def __sub__(self, other):
         #print(f'subtracting polynomial {other} from {self}') #debug
@@ -117,7 +161,7 @@ class Polynomial:
                         currentTerm[variable] = exponent
                 outputPolynomial.append(currentTerm)
 
-        return Polynomial(outputPolynomial)
+        return Polynomial(self.consolidate(outputPolynomial))
 
     def __iadd__(self, other):
         #print(f'adding polynomials {self} and {other}') #debug
@@ -130,7 +174,7 @@ class Polynomial:
             else:
                 outputPolynomial.append(term.copy())
 
-        self.polynomial = outputPolynomial
+        self.polynomial = self.consolidate(outputPolynomial)
         return self
 
     def __isub__(self, other):
@@ -150,7 +194,7 @@ class Polynomial:
                         currentTerm[variable] = exponent
                 outputPolynomial.append(currentTerm)
 
-        self.polynomial = outputPolynomial
+        self.polynomial = self.consolidate(outputPolynomial)
         return self
 
     def __str__(self):
@@ -178,10 +222,14 @@ class Polynomial:
         return output
 
     def intIfPos(self, num):
-        if int(num) == num:
-            return int(num)
+        try:
+            assert int(num) == num
+        except AssertionError:
+            return num
+        except ValueError:
+            return num
         else:
-            return(num)
+            return int(num)
 
     def getVariables(self, polynomial):
         variables = set()
@@ -245,3 +293,26 @@ class Polynomial:
                 return i
         #print('didn\'t find term') #debug
         return False
+
+    def consolidate(self, polynomial):
+        output = polynomial.copy()
+        termsToRemove = []
+        
+        total = 0
+        for term in output:
+            numVars = 0
+            for variable in term:
+                if variable != 'num':
+                    numVars += 1
+
+            if numVars == 0:
+                total += term['num']
+                termsToRemove.append(term)
+
+        if total:
+            output.append({'num': total})
+
+        for term in termsToRemove:
+            del output[output.index(term)]
+
+        return output
