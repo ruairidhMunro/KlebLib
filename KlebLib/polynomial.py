@@ -135,8 +135,9 @@ class Polynomial:
 
     def __add__(self, other):
         #print(f'adding polynomials {self} and {other}') #debug
-        outputPolynomial = self.polynomial.copy()
-        for i, term in enumerate(other.polynomial):
+        outputPolynomial = self.copy(self.polynomial)
+        
+        for i, term in enumerate(other.polynomial.copy()):
             #print(f'adding term {term} to polynomial {outputPolynomial}') #debug
             location = self.locate(outputPolynomial.copy(), term.copy())
             if location:
@@ -148,8 +149,9 @@ class Polynomial:
 
     def __sub__(self, other):
         #print(f'subtracting polynomial {other} from {self}') #debug
-        outputPolynomial = self.polynomial.copy()
-        for i, term in enumerate(other.polynomial):
+        outputPolynomial = self.copy(self.polynomial)
+        
+        for i, term in enumerate(other.polynomial.copy()):
             #print(f'subtracting term {term} from polynomial {outputPolynomial}') #debug
             location = self.locate(outputPolynomial.copy(), term.copy())
             if location:
@@ -167,8 +169,9 @@ class Polynomial:
 
     def __iadd__(self, other):
         #print(f'adding polynomials {self} and {other}') #debug
-        outputPolynomial = self.polynomial.copy()
-        for i, term in enumerate(other.polynomial):
+        outputPolynomial = self.copy(self.polynomial)
+        
+        for i, term in enumerate(other.polynomial.copy()):
             #print(f'adding term {term} to polynomial {outputPolynomial}') #debug
             location = self.locate(outputPolynomial.copy(), term.copy())
             if location:
@@ -181,8 +184,9 @@ class Polynomial:
 
     def __isub__(self, other):
         #print(f'subtracting polynomial {other} from {self}') #debug
-        outputPolynomial = self.polynomial.copy()
-        for i, term in enumerate(other.polynomial):
+        outputPolynomial = self.copy(self.polynomial)
+        
+        for i, term in enumerate(other.polynomial.copy()):
             #print(f'suntracting term {term} from polynomial {outputPolynomial}') #debug
             location = self.locate(outputPolynomial.copy(), term.copy())
             if location:
@@ -222,6 +226,32 @@ class Polynomial:
                         output += f'({variable}^{self.intIfPos(exponent)})'
                 
         return output
+
+    def __getitem__(self, variable):
+        output = []
+        
+        for term in self.polynomial:
+            if variable in term:
+                output.append(term.copy())
+
+        return Polynomial(output)
+
+    def __eq__(self, other):
+        equal = True
+
+        for term in self.polynomial:
+            print(f'comparing term {term} from self') #debug
+            if term not in other.polynomial:
+                print(f'didn\'t find term {term} in other') #debug
+                equal = False
+                
+        for term in other.polynomial:
+            print(f'comparing term {term} from other') #debug
+            if term not in self.polynomial:
+                print(f'didn\'t find term {term} in self') #debug
+                equal = False
+
+        return equal
 
     def intIfPos(self, num):
         try:
@@ -316,5 +346,13 @@ class Polynomial:
 
         for term in termsToRemove:
             del output[output.index(term)]
+
+        return output
+
+    def copy(self, listToCopy):
+        output = []
+        
+        for item in listToCopy:
+            output.append(item.copy())
 
         return output

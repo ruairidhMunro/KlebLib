@@ -78,4 +78,10 @@ if __name__ == '__main__':
         {'num': 8}]
     )
     polynomial3 = polynomial1 - polynomial2
-    print(polynomial3.integrateDefinite('x', 4, 2))
+    
+    print(polynomial1)
+    print(polynomial2)
+    polynomial4 = polynomial1 - polynomial2
+    print(polynomial1)
+    print(polynomial2)
+    print(polynomial3 == polynomial4)
