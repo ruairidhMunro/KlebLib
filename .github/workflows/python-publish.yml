@@ -33,7 +33,7 @@ jobs:
         build
         --sdist
         --wheel
-        --outdir dist/
+        --outdir KlebLib/dist
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
