@@ -69,19 +69,4 @@ class Test:
         return universaladdition.addNums(base, num1, num2)
         
 if __name__ == '__main__':
-    polynomial1 = polynomial.Polynomial('3x^2 - 12x + 6y^5 + y - 3 - 3xy^2')
-    polynomial2 = polynomial.Polynomial(
-        [{'x': 3, 'num': -2}, 
-        {'x': 1, 'num': 3},
-        {'z': 7, 'num': 4},
-        {'x': 1, 'z': 2, 'num': 9},
-        {'num': 8}]
-    )
-    polynomial3 = polynomial1 - polynomial2
-    
-    print(polynomial1)
-    print(polynomial2)
-    polynomial4 = polynomial1 - polynomial2
-    print(polynomial1)
-    print(polynomial2)
-    print(polynomial3 == polynomial4)
+    print(baseconversion.convertBetweenDualBases('012232', 16, 4, 27, 3))

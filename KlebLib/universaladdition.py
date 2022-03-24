@@ -10,15 +10,15 @@ def add(base, *nums):
     if len(nums) < 2:
         raise ValueError('List nums must be of length 2 or greater')
   
-    print(f'{nums} start') #debug
+    #print(f'{nums} start') #debug
 
 	#Add the first 2 numbers, store the value as the first num and delete the second num
     while len(nums) > 2:
-        print('recursion activated') #debug
+        #print('recursion activated') #debug
         nums[0] = addNums(base, nums[0], nums[1])
         del nums[1]
   
-    print(f'{nums} passed while loop') #debug
+    #print(f'{nums} passed while loop') #debug
   
     num1 = nums[0]
     num2 = nums[1]
@@ -98,12 +98,12 @@ def convertListUnknown(num, base):
     convertedAns = []
     for i in range(len(num)):
     	convertedAns.append(convertBase(answer[i], 10, base))
-    print(f'converted answer: {convertedAns}') #debug
+    #print(f'converted answer: {convertedAns}') #debug
   
     #Correct blank digits to 0s
     for i in range(len(convertedAns)):
         if not convertedAns[i]:
             convertedAns[i] = '0'
-    print(f'corrected answer: {convertedAns}') #debug
+    #print(f'corrected answer: {convertedAns}') #debug
   
     return convertedAns
