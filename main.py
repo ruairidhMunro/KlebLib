@@ -42,16 +42,16 @@ class Test:
         return fraction3.output()
 
     def polynomialTest(self, args):
-        testPolynomial = polynomial.Polynomial(self.kwargs['polynomial'], dictInput=self.kwargs['dictInput'])
+        testPolynomial = polynomial.Polynomial(self.kwargs['polynomial'])
 
-        differentiated = testPolynomial.differentiate()
-        integrated = testPolynomial.integrate()
+        differentiated = testPolynomial.differentiate(args[0])
+        integrated = testPolynomial.integrate(args[0])
 
         return {
-            'polynomial': testPolynomial.output(),
-            'readable': testPolynomial.output(True),
-            'differentiated': differentiated.output(),
-            'integrated': integrated.output()
+            'polynomial': testPolynomial.polynomial,
+            'readable': str(testPolynomial),
+            'differentiated': differentiated.polynomial,
+            'integrated': integrated.polynomial
         }
 
     def conversionTest(self, args):
@@ -69,4 +69,5 @@ class Test:
         return universaladdition.addNums(base, num1, num2)
         
 if __name__ == '__main__':
-    print(baseconversion.convertBetweenDualBases('012232', 16, 4, 27, 3))
+    test1 = Test(testType='polynomial', polynomial='x^2 - 3x + 4y - 12')
+    print(test1.test('x'))
