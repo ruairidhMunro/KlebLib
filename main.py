@@ -69,5 +69,5 @@ class Test:
         return universaladdition.addNums(base, num1, num2)
         
 if __name__ == '__main__':
-    test1 = Test(testType='polynomial', polynomial='x^2 - 3x + 4y - 12')
-    print(test1.test('x'))
+    fraction1 = fraction.Fraction(1.5)
+    print(0.75 - fraction1)
