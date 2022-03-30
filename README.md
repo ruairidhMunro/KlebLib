@@ -10,3 +10,6 @@ KlebLib currently includes:
 * Universal Addition
 
 Documentation here: https://github.com/Spartan2909/KlebLib/wiki
+
+## Acknowledgements
+* Kai Kerlaff, for his work on baseconversion and multibaseaddition
