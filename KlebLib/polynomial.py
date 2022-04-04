@@ -9,10 +9,10 @@ class Polynomial:
                     raise KeyError('Every term must contain key \'num\'')
             self.polynomial = polynomial
         else:
-            self.polynomial = self.parse(polynomial, self.getVariables(polynomial))
+            self.polynomial = self._parse(polynomial, self.get_variables(polynomial))
         #print(self.polynomials) #debug
 
-    def parse(self, polynomial, variables):
+    def _parse(self, polynomial, variables):
         #parse the polynomial into a list of dictionaries
         
         output = []
@@ -31,7 +31,7 @@ class Polynomial:
 
         terms = re.split(r'\s+[+-]\s+', polynomial)
         #print(f'the terms before translation are {terms}') #debug
-        terms = [self.translateSuper(i) for i in terms]
+        terms = [self._translate_super(i) for i in terms]
         #print(f'the terms after translation are {terms}') #debug
         #print(f'the negatives are {negatives}') #debug
 
@@ -47,14 +47,14 @@ class Polynomial:
             else:
                 negativeMultiple = 1
                         
-            for variable in self.getVariables(term):
+            for variable in self.get_variables(term):
                 if f'{variable}^' in term:
-                    currentTerm[variable] = self.trimNum(term, 'right')
+                    currentTerm[variable] = self._trim_num(term, 'right')
                             
                 else: #If it has no exponent
                     currentTerm[variable] = 1
 
-            trimmed = self.trimNum(term, 'left')
+            trimmed = self._trim_num(term, 'left')
             if trimmed: #If there is a coefficient
                 currentTerm['num'] = trimmed * negativeMultiple
             else:
@@ -65,7 +65,10 @@ class Polynomial:
 
         return output
 
-    def differentiate(self, varToDiff):
+    def differentiate(self, varToDiff=None):
+        if not varToDiff and len(self._get_variables(self.polynomial)) != 1:
+            raise TypeError("integrate() missing 1 required positional argument: 'varToIntegrate'")
+        
         outputPolynomial = []
         for term in self.polynomial:
             termToEdit = {}
@@ -105,7 +108,7 @@ class Polynomial:
 
         return Polynomial(outputPolynomial)
 
-    def integrateDefinite(self, varToIntegrate, max, min):
+    def integrate_definite(self, varToIntegrate, max, min):
         integrated = self.integrate(varToIntegrate)
         outputs = [[], []]
         limits = [max, min]
@@ -127,7 +130,7 @@ class Polynomial:
                 output.append(outputTerm)
 
             #print(f'output {i} before cleanup is {output}') #debug
-            output = self.consolidate(output)
+            output = self._consolidate(output)
             #print(f'output {i} after cleanup is {output}') #debug
 
         upper = Polynomial(outputs[0])
@@ -137,26 +140,26 @@ class Polynomial:
 
     def __add__(self, other):
         #print(f'adding polynomials {self} and {other}') #debug
-        outputPolynomial = self.copy(self.polynomial)
+        outputPolynomial = self._copy(self.polynomial)
         
         for i, term in enumerate(other.polynomial.copy()):
             #print(f'adding term {term} to polynomial {outputPolynomial}') #debug
-            location = self.locate(outputPolynomial.copy(), term.copy())
+            location = self._locate(outputPolynomial.copy(), term.copy())
             if not type(location) is bool:
                 outputPolynomial[location]['num'] += term['num']
             else:
                 outputPolynomial.append(term.copy())
 
         #print(f'finished polynomial is {self.consolidate(outputPolynomial)}') #debug
-        return Polynomial(self.consolidate(outputPolynomial))
+        return Polynomial(self._consolidate(outputPolynomial))
 
     def __sub__(self, other):
         #print(f'subtracting polynomial {other} from {self}') #debug
-        outputPolynomial = self.copy(self.polynomial)
+        outputPolynomial = self._copy(self.polynomial)
         
         for i, term in enumerate(other.polynomial.copy()):
             #print(f'subtracting term {term} from polynomial {outputPolynomial}') #debug
-            location = self.locate(outputPolynomial.copy(), term.copy())
+            location = self._locate(outputPolynomial.copy(), term.copy())
             if not type(location) is bool:
                 outputPolynomial[location]['num'] -= term['num']
             else:
@@ -173,11 +176,11 @@ class Polynomial:
 
     def __iadd__(self, other):
         #print(f'adding polynomials {self} and {other}') #debug
-        outputPolynomial = self.copy(self.polynomial)
+        outputPolynomial = self._copy(self.polynomial)
         
         for i, term in enumerate(other.polynomial.copy()):
             #print(f'adding term {term} to polynomial {outputPolynomial}') #debug
-            location = self.locate(outputPolynomial.copy(), term.copy())
+            location = self._locate(outputPolynomial.copy(), term.copy())
             if not type(location) is bool:
                 outputPolynomial[location]['num'] += term['num']
             else:
@@ -189,11 +192,11 @@ class Polynomial:
 
     def __isub__(self, other):
         #print(f'subtracting polynomial {other} from {self}') #debug
-        outputPolynomial = self.copy(self.polynomial)
+        outputPolynomial = self._copy(self.polynomial)
         
         for i, term in enumerate(other.polynomial.copy()):
             #print(f'suntracting term {term} from polynomial {outputPolynomial}') #debug
-            location = self.locate(outputPolynomial.copy(), term.copy())
+            location = self._locate(outputPolynomial.copy(), term.copy())
             if not type(location) is bool:
                 outputPolynomial[location]['num'] -= term['num']
             else:
@@ -217,9 +220,9 @@ class Polynomial:
             if term['num'] < 0:
                 if term['num'] != -1:
                     if i == 0:
-                        output += f'-{self.intIfPos(abs(term["num"]))}'
+                        output += f'-{self._int_if_pos(abs(term["num"]))}'
                     else:
-                        output += f' - {self.intIfPos(abs(term["num"]))}'
+                        output += f' - {self._int_if_pos(abs(term["num"]))}'
                 else:
                     if i == 0:
                         output += '-'
@@ -229,9 +232,9 @@ class Polynomial:
                 if term['num'] == 1:
                     output += ' + '
                 else:
-                    output += f' + {self.intIfPos(term["num"])}'
+                    output += f' + {self._int_if_pos(term["num"])}'
             elif term['num'] != 1:
-                output += str(self.intIfPos(term['num']))
+                output += str(self._int_if_pos(term['num']))
 
             i += 1
                 
@@ -240,7 +243,7 @@ class Polynomial:
                     if exponent == 1:
                         output += str(variable)
                     else:
-                        output += variable + self.super(self.intIfPos(exponent))
+                        output += variable + self._super(self._int_if_pos(exponent))
                 
         return output
 
@@ -270,7 +273,7 @@ class Polynomial:
 
         return equal
 
-    def intIfPos(self, num):
+    def _int_if_pos(self, num):
         #print(f'checking if {num} can be int') #debug
         try:
             assert int(num) == num
@@ -281,7 +284,7 @@ class Polynomial:
         else:
             return int(num)
 
-    def getVariables(self, polynomial):
+    def get_variables(self, polynomial):
         variables = set()
         try:
             for character in polynomial:
@@ -294,9 +297,9 @@ class Polynomial:
 
         return list(variables)
 
-    def trimNum(self, string, side):
+    def _trim_num(self, string, side):
         #print(f'trimming {string}') #debug
-        numPos = self.getNumPos(string, side)
+        numPos = self._get_num_pos(string, side)
 
         if numPos:
             #print(f'num found between positions {numPos.start()} and {numPos.end()}') #debug
@@ -305,7 +308,7 @@ class Polynomial:
             #print(f'num not found') #debug
             return 0
 
-    def getNumPos(self, string, side):
+    def _get_num_pos(self, string, side):
         if side == 'left':
             numPos = re.search(r'^-?\d+\.?\d*', string)
         else:
@@ -316,7 +319,7 @@ class Polynomial:
         else:
             return None
 
-    def locate(self, polynomial, searchTerm):
+    def _locate(self, polynomial, searchTerm):
         #print(f'locating term {searchTerm} in polynomial {polynomial}') #debug
         del searchTerm['num']
         for i, term in enumerate(polynomial):
@@ -328,7 +331,7 @@ class Polynomial:
         #print('didn\'t find term') #debug
         return False
 
-    def consolidate(self, polynomial):
+    def _consolidate(self, polynomial):
         output = polynomial.copy()
         termsToRemove = []
         
@@ -351,7 +354,7 @@ class Polynomial:
 
         return output
 
-    def copy(self, listToCopy):
+    def _copy(self, listToCopy):
         output = []
         
         for item in listToCopy:
@@ -359,21 +362,21 @@ class Polynomial:
 
         return output
 
-    def super(self, num):
+    def _super(self, num):
         superscriptMap = {'1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '-': '⁻'}
 
-        return self.translate(str(num), superscriptMap)
+        return self._translate(str(num), superscriptMap)
 
-    def translateSuper(self, string):
+    def _translate_super(self, string):
         #print(f'translating {string}') #debug
         superscriptMap = {'1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '-': '⁻'}
 
         superscriptMap = {v:k for (k, v) in superscriptMap.items()}
 
-        string = self.translate(string, superscriptMap)
+        string = self._translate(string, superscriptMap)
 
-        num = self.trimNum(string, 'right')
-        numPos = self.getNumPos(string, 'right')
+        num = self._trim_num(string, 'right')
+        numPos = self._get_num_pos(string, 'right')
 
         if numPos:
             if numPos[0] == 0:
@@ -385,7 +388,7 @@ class Polynomial:
         else:
             return string
         
-    def translate(self, string, table):
+    def _translate(self, string, table):
         trans = str.maketrans(
             ''.join(table.keys()),
             ''.join(table.values())

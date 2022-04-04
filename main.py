@@ -2,5 +2,5 @@ from KlebLib import fraction, polynomial, rounding, baseconversion, universaladd
 from KlebLib.test import Test
         
 if __name__ == '__main__':
-    fraction1 = fraction.Fraction(1.5)
-    print(0.75 - fraction1)
+    polynomial1 = polynomial.Polynomial('3x^2')
+    print(polynomial1.differentiate('x').integrate())

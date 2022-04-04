@@ -13,12 +13,13 @@ class Test:
         elif self.testType == 'universalAddition':
             return self.universalAdditionTest(args)
 
-    def outputVars(self):
+    @property
+    def variables(self):
         return {'testType': self.testType, 'kwargs': self.kwargs}
 
     #Individual tests
 
-    def fractionTest(self, args):
+    def _fractionTest(self, args):
         fraction1 = fraction.Fraction(self.kwargs['fraction1'])
         fraction2 = fraction.Fraction(self.kwargs['fraction2'])
 
@@ -32,9 +33,9 @@ class Test:
         elif opType == 'divide':
             fraction3 = fraction1 / fraction2
 
-        return fraction3.output()
+        return str(fraction3)
 
-    def polynomialTest(self, args):
+    def _polynomial_test(self, args):
         testPolynomial = polynomial.Polynomial(self.kwargs['polynomial'])
 
         differentiated = testPolynomial.differentiate(args[0])
@@ -47,16 +48,16 @@ class Test:
             'integrated': integrated.polynomial
         }
 
-    def conversionTest(self, args):
+    def _conversion_test(self, args):
         num = self.kwargs['num']
         base = self.kwargs['base']
         convertedBase = self.kwargs['baseToConvertTo']
 
-        return baseconversion.convertBase(num, base, convertedBase)
+        return baseconversion.convert_base(num, base, convertedBase)
 
-    def universalAdditionTest(self, args):
+    def _universal_addition_test(self, args):
         num1 = self.kwargs['num1']
         num2 = self.kwargs['num2']
         base = self.kwargs['base']
 
-        return universaladdition.addNums(base, num1, num2)
+        return universaladdition.add(base, num1, num2)

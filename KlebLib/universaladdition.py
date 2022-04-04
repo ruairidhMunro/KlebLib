@@ -15,7 +15,7 @@ def add(base, *nums):
 	#Add the first 2 numbers, store the value as the first num and delete the second num
     while len(nums) > 2:
         #print('recursion activated') #debug
-        nums[0] = addNums(base, nums[0], nums[1])
+        nums[0] = add(base, nums[0], nums[1])
         del nums[1]
   
     #print(f'{nums} passed while loop') #debug
@@ -51,9 +51,9 @@ def add(base, *nums):
     
     #Convert nums to denary and add the numbers    
     for i, (num1digit, num2digit) in enumerate(zip(num1, num2)):
-        num1digit = int(convertDenary(num1digit, base))
+        num1digit = int(convert_base(num1digit, base, 10))
         num1[i] = num1digit
-        num2digit = int(convertDenary(num2digit, base))
+        num2digit = int(convert_base(num2digit, base, 10))
         num2[i] = num2digit
 		
         result = num1digit + num2digit + carry
@@ -61,49 +61,30 @@ def add(base, *nums):
         	carry = result // base
         	result = int(result % base)
         answer.append(result)
-        print(f'result: {result}') #debug
-        print(f'carry: {carry}') #debug
+        #print(f'result: {result}') #debug
+        #print(f'carry: {carry}') #debug
     
     #Handle overflow
     if carry > 0:
     	answer.append(carry)
     
     #Reverse answer to be in the correct order
-    print(f'reverse list answer: {answer}') #debug
+    #print(f'reverse list answer: {answer}') #debug
     answer.reverse()
-    print(f'list answer: {answer}') #debug
+    #print(f'list answer: {answer}') #debug
   
     #Convert digits to string
     for i in range(len(answer)):
         answer[i] = str(answer[i])
-    print(f'string list answer: {answer}') #debug
+    #print(f'string list answer: {answer}') #debug
  
     #Convert answer back to original base
     for i in range(len(answer)):
-        convertedAns.append(convertBase(answer[i], 10, base))
-    print(f'converted answer: {convertedAns}') #debug
+        convertedAns.append(convert_base(answer[i], 10, base))
+    #print(f'converted answer: {convertedAns}') #debug
 	
     #Combine digits into one string
     for i in convertedAns:
     	finalAns += str(i)
     
     return finalAns
-  
-def convertListDenary(num, base):
-    for i in range(len(num)):
-    	num[i] = int(convertDenary(str(num[i]), base))
-    return num
-    
-def convertListUnknown(num, base):
-    convertedAns = []
-    for i in range(len(num)):
-    	convertedAns.append(convertBase(answer[i], 10, base))
-    #print(f'converted answer: {convertedAns}') #debug
-  
-    #Correct blank digits to 0s
-    for i in range(len(convertedAns)):
-        if not convertedAns[i]:
-            convertedAns[i] = '0'
-    #print(f'corrected answer: {convertedAns}') #debug
-  
-    return convertedAns
