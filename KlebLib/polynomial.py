@@ -140,7 +140,7 @@ class Polynomial:
 
     def __add__(self, other):
         #print(f'adding polynomials {self} and {other}') #debug
-        outputPolynomial = self._copy(self.polynomial)
+        outputPolynomial = self.polynomial.deepcopy()
         
         for i, term in enumerate(other.polynomial.copy()):
             #print(f'adding term {term} to polynomial {outputPolynomial}') #debug
@@ -155,7 +155,7 @@ class Polynomial:
 
     def __sub__(self, other):
         #print(f'subtracting polynomial {other} from {self}') #debug
-        outputPolynomial = self._copy(self.polynomial)
+        outputPolynomial = self.polynomial.deepcopy()
         
         for i, term in enumerate(other.polynomial.copy()):
             #print(f'subtracting term {term} from polynomial {outputPolynomial}') #debug
@@ -176,7 +176,7 @@ class Polynomial:
 
     def __iadd__(self, other):
         #print(f'adding polynomials {self} and {other}') #debug
-        outputPolynomial = self._copy(self.polynomial)
+        outputPolynomial = self.polynomial.deepcpy()
         
         for i, term in enumerate(other.polynomial.copy()):
             #print(f'adding term {term} to polynomial {outputPolynomial}') #debug
@@ -192,7 +192,7 @@ class Polynomial:
 
     def __isub__(self, other):
         #print(f'subtracting polynomial {other} from {self}') #debug
-        outputPolynomial = self._copy(self.polynomial)
+        outputPolynomial = self.polynomial.deepcopy()
         
         for i, term in enumerate(other.polynomial.copy()):
             #print(f'suntracting term {term} from polynomial {outputPolynomial}') #debug

@@ -1,6 +1,7 @@
-from KlebLib import fraction, polynomial, rounding, baseconversion, universaladdition
+from KlebLib import fraction, polynomial, rounding, baseconversion, universaladdition, series
 from KlebLib.test import Test
         
 if __name__ == '__main__':
-    polynomial1 = polynomial.Polynomial('3x^2')
-    print(polynomial1.differentiate('x').integrate())
+    series1 = series.Series([1, 2, 3], int)
+    series2 = 0 + series1
+    print(list(series2))
