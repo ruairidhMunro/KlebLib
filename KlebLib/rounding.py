@@ -1,4 +1,4 @@
-def ceiling(num, decPlaces=0):
+def ceiling(num:float, decPlaces:int=0):
     #Check validity of input
     if not isinstance(num, int) and not isinstance(num, float):
         raise ValueError(f'Expected int or float, got {type(num)}')
@@ -48,7 +48,7 @@ def ceiling(num, decPlaces=0):
     num = float(num)
     return num
     
-def smartRound(num, decPlaces):
+def smartRound(num:float, decPlaces:int=0):
     if str(num)[decPlaces + 1] >= 5:
         return ceiling(num, decPlaces)
     else:

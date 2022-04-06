@@ -1,5 +1,5 @@
 class Series:
-    def __init__(self, item, selfType:type=None, strict:bool=False):
+    def __init__(self, item:any, selfType:type=None, strict:bool=False):
         #print(f'creating series from item {item}') #debug
         skip = False
 

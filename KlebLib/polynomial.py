@@ -12,7 +12,7 @@ class Polynomial:
             self.polynomial = self._parse(polynomial, self.get_variables(polynomial))
         #print(self.polynomials) #debug
 
-    def _parse(self, polynomial, variables):
+    def _parse(self, polynomial:str, variables:list):
         #parse the polynomial into a list of dictionaries
         
         output = []
@@ -65,9 +65,9 @@ class Polynomial:
 
         return output
 
-    def differentiate(self, varToDiff=None):
+    def differentiate(self, varToDiff:str=None):
         if not varToDiff and len(self._get_variables(self.polynomial)) != 1:
-            raise TypeError("integrate() missing 1 required positional argument: 'varToIntegrate'")
+            raise TypeError('cannot implicitly detect variable for polynomials of multiple variables')
         
         outputPolynomial = []
         for term in self.polynomial:
@@ -88,7 +88,7 @@ class Polynomial:
 
         return Polynomial(outputPolynomial)
 
-    def integrate(self, varToIntegrate):
+    def integrate(self, varToIntegrate:str):
         outputPolynomial = []
         for term in self.polynomial:
             termToEdit = {}
@@ -108,7 +108,7 @@ class Polynomial:
 
         return Polynomial(outputPolynomial)
 
-    def integrate_definite(self, varToIntegrate, max, min):
+    def integrate_definite(self, varToIntegrate:str, max:int, min:int):
         integrated = self.integrate(varToIntegrate)
         outputs = [[], []]
         limits = [max, min]
@@ -247,7 +247,7 @@ class Polynomial:
                 
         return output
 
-    def __getitem__(self, variable):
+    def __getitem__(self, variable:str):
         output = []
         
         for term in self.polynomial:
@@ -284,7 +284,7 @@ class Polynomial:
         else:
             return int(num)
 
-    def get_variables(self, polynomial):
+    def get_variables(self, polynomial:str):
         variables = set()
         try:
             for character in polynomial:
@@ -297,7 +297,7 @@ class Polynomial:
 
         return list(variables)
 
-    def _trim_num(self, string, side):
+    def _trim_num(self, string:str, side:str):
         #print(f'trimming {string}') #debug
         numPos = self._get_num_pos(string, side)
 
@@ -308,7 +308,7 @@ class Polynomial:
             #print(f'num not found') #debug
             return 0
 
-    def _get_num_pos(self, string, side):
+    def _get_num_pos(self, string:str, side:str):
         if side == 'left':
             numPos = re.search(r'^-?\d+\.?\d*', string)
         else:
@@ -319,7 +319,7 @@ class Polynomial:
         else:
             return None
 
-    def _locate(self, polynomial, searchTerm):
+    def _locate(self, polynomial:list, searchTerm:dict):
         #print(f'locating term {searchTerm} in polynomial {polynomial}') #debug
         del searchTerm['num']
         for i, term in enumerate(polynomial):
@@ -331,7 +331,7 @@ class Polynomial:
         #print('didn\'t find term') #debug
         return False
 
-    def _consolidate(self, polynomial):
+    def _consolidate(self, polynomial:list):
         output = polynomial.copy()
         termsToRemove = []
         
@@ -354,7 +354,7 @@ class Polynomial:
 
         return output
 
-    def _copy(self, listToCopy):
+    def _copy(self, listToCopy:list):
         output = []
         
         for item in listToCopy:
@@ -362,12 +362,12 @@ class Polynomial:
 
         return output
 
-    def _super(self, num):
+    def _super(self, num:str):
         superscriptMap = {'1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '-': '⁻'}
 
         return self._translate(str(num), superscriptMap)
 
-    def _translate_super(self, string):
+    def _translate_super(self, string:str):
         #print(f'translating {string}') #debug
         superscriptMap = {'1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '-': '⁻'}
 
@@ -388,7 +388,7 @@ class Polynomial:
         else:
             return string
         
-    def _translate(self, string, table):
+    def _translate(self, string:str, table:dict):
         trans = str.maketrans(
             ''.join(table.keys()),
             ''.join(table.values())

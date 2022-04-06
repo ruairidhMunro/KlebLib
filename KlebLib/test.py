@@ -1,5 +1,5 @@
 class Test:
-    def __init__(self, testType, **kwargs):
+    def __init__(self, testType:str, **kwargs):
         self.testType = testType
         self.kwargs = kwargs
 

@@ -1,6 +1,6 @@
 from KlebLib.baseconversion import *
 
-def add(base, *nums):
+def add(base:int, *nums:str):
     #Check validity of input
     if not isinstance(base, int):
         raise ValueError(f'Expected int, got {type(base)}')

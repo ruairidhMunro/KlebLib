@@ -106,28 +106,28 @@ class Fraction:
         return float(self) <= float(other)
 
     #Adds two given fractions
-    def _add(self, fraction1, fraction2):
+    def _add(self, fraction1:Fraction, fraction2:Fraction):
         num = (fraction1.num * fraction2.dem) + (fraction1.dem * fraction2.num)
         dem = fraction1.dem * fraction2.dem
 
         return Fraction([num, dem])
 
     #Subtracts two given fractions
-    def _sub(self, fraction1, fraction2):
+    def _sub(self, fraction1:Fraction, fraction2:Fraction):
         num = (fraction1.num * fraction2.dem) - (fraction1.dem * fraction2.num)
         dem = fraction1.dem * fraction2.dem
 
         return Fraction([num, dem])
 
     #Multiplies two given fractions
-    def _mul(self, fraction1, fraction2):
+    def _mul(self, fraction1:Fraction, fraction2:Fraction):
         num = fraction1.num * fraction2.num
         dem = fraction1.dem * fraction2.dem
 
         return Fraction([num, dem])
 
     #Divides two given fractions
-    def _truediv(self, fraction1, fraction2):
+    def _truediv(self, fraction1:Fraction, fraction2:Fraction):
         num = fraction1.num * fraction2.dem
         dem = fraction1.dem * fraction2.num
 
@@ -137,7 +137,7 @@ class Fraction:
     def __add__(self, other):
         if type(other) is not Fraction:
             try:
-                other = _num_to_fraction(other)
+                other = self._num_to_fraction(other)
             except TypeError:
                 raise TypeError(f'Cannot add type {type(other)} to fraction')
             
@@ -147,7 +147,7 @@ class Fraction:
     def __sub__(self, other):
         if type(other) is not Fraction:
             try:
-                other = _num_to_fraction(other)
+                other = self._num_to_fraction(other)
             except TypeError:
                 raise TypeError(f'Cannot add type {type(other)} to fraction')
                 
@@ -157,7 +157,7 @@ class Fraction:
     def __mul__(self, other):
         if type(other) is not Fraction:
             try:
-                other = _num_to_fraction(other)
+                other = self._num_to_fraction(other)
             except TypeError:
                 raise TypeError(f'Cannot add type {type(other)} to fraction')
                 
@@ -167,7 +167,7 @@ class Fraction:
     def __truediv__(self, other):
         if type(other) is not Fraction:
             try:
-                other = _num_to_fraction(other)
+                other = self._num_to_fraction(other)
             except TypeError:
                 raise TypeError(f'Cannot add type {type(other)} to fraction')
                 
@@ -197,7 +197,7 @@ class Fraction:
     #Divides this fraction by another one and returns a new fraction
     def __rtruediv__(self, number):
         #print(dividing {number} by self') #debug
-        other = self.num_to_fraction(number)
+        other = self._num_to_fraction(number)
         
         return self._truediv(other, self)
 
@@ -205,7 +205,7 @@ class Fraction:
     def __iadd__(self, other):
         if type(other) is not Fraction:
             try:
-                other = _num_to_fraction(other)
+                other = self._num_to_fraction(other)
             except TypeError:
                 raise TypeError(f'Cannot add type {type(other)} to fraction')
                 
@@ -219,7 +219,7 @@ class Fraction:
     def __isub__(self, other):
         if type(other) is not Fraction:
             try:
-                other = _num_to_fraction(other)
+                other = self._num_to_fraction(other)
             except TypeError:
                 raise TypeError(f'Cannot add type {type(other)} to fraction')
                 
@@ -233,7 +233,7 @@ class Fraction:
     def __imul__(self, other):
         if type(other) is not Fraction:
             try:
-                other = _num_to_fraction(other)
+                other = self._num_to_fraction(other)
             except TypeError:
                 raise TypeError(f'Cannot add type {type(other)} to fraction')
                 
@@ -247,7 +247,7 @@ class Fraction:
     def __itruediv__(self, other):
         if type(other) is not Fraction:
             try:
-                other = _num_to_fraction(other)
+                other = self._num_to_fraction(other)
             except TypeError:
                 raise TypeError(f'Cannot add type {type(other)} to fraction')
                 
@@ -302,7 +302,7 @@ class Fraction:
 
     #Updates the fraction through the use of nums
     @nums.setter
-    def nums(self, numsList):
+    def nums(self, numsList:list):
         self.num = numsList[0]
         self.dem = numsList[1]
 
@@ -310,7 +310,7 @@ class Fraction:
 
     def _num_to_fraction(self, number):
         if round(number, 0) == number:
-            return [number, 0]
+            return Fraction([number, 1])
         else:
             decPlaces = len(str(number)[re.search(r'\.', str(number)).start() + 1:])
             number *= 10 ** decPlaces

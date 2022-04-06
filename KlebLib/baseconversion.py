@@ -2,7 +2,7 @@ from math import log
 
 possDigits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#£&%;:€$¥_^§|~<>()[]{}.,!?ςερτυθιοσδφγξλζψωβцгшщзфлджэячиьбюъ'
 
-def _convert_denary(num, base):
+def _convert_denary(num:str, base:int):
     #Set up variables
     decNum = 0
     decNumArr = []
@@ -35,7 +35,7 @@ def _convert_denary(num, base):
     
     return decNum
   
-def convert_base(num, base, ansBase):
+def convert_base(num:str, base:int, ansBase:int):
     #Set up variables
     decNum = _convert_denary(num, base)
     usedDigits = []
@@ -76,7 +76,7 @@ def convert_base(num, base, ansBase):
   
     return ans
 
-def _convert_dual_base_denary(num, outerBase, innerBase):
+def _convert_dual_base_denary(num:str, outerBase:int, innerBase:int):
     #Convert a number from a dual base to denary
     innerSize = int(log(outerBase, innerBase))
     
@@ -102,14 +102,14 @@ def _convert_dual_base_denary(num, outerBase, innerBase):
 
     return decNum
 
-def convert_from_dual_base(num, outerBase, innerBase, ansBase):
+def convert_from_dual_base(num:str, outerBase:int, innerBase:int, ansBase:int):
     #Convert a number from a dual base to any other base
     innerSize = int(log(outerBase, innerBase))
     decNum = _convert_dual_base_denary(num, outerBase, innerBase)
     ans = convert_base(str(decNum), 10, ansBase)
     return ans
 
-def convert_to_dual_base(num, base, ansOuterBase, ansInnerBase):
+def convert_to_dual_base(num:str, base:int, ansOuterBase:int, ansInnerBase:int):
     #Convert a number from any base to a dual base
     innerSize = int(log(ansOuterBase, ansInnerBase))
     decNum = _convert_denary(num, base)
@@ -128,7 +128,7 @@ def convert_to_dual_base(num, base, ansOuterBase, ansInnerBase):
 
     return ans
 
-def convert_between_dual_bases(num, outerBase, innerBase, ansOuterBase, ansInnerBase):
+def convert_between_dual_bases(num:str, outerBase:str, innerBase:str, ansOuterBase:str, ansInnerBase:str):
     innerSize = int(log(outerBase, innerBase))
     ansInnerSize = int(log(ansOuterBase, ansInnerBase))
     temp = convert_from_dual_base(num, outerBase, innerBase, 6)
