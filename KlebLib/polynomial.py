@@ -1,8 +1,9 @@
 import re
+from typing import Union
 
 class Polynomial:
-    def __init__(self, polynomial):
-        #print(f'the polynomials are {polynomials} and are of type {type(polynomials)}') #debug
+    def __init__(self, polynomial:Union[list, str]):
+        #print(f'the polynomials are {polynomial} and are of type {type(polynomial).__name__}') #debug
         if type(polynomial) is list:
             for term in polynomial:
                 if not 'num' in term:
@@ -12,7 +13,7 @@ class Polynomial:
             self.polynomial = self._parse(polynomial, self.get_variables(polynomial))
         #print(self.polynomials) #debug
 
-    def _parse(self, polynomial:str, variables:list):
+    def _parse(self, polynomial:str, variables:list) -> list:
         #parse the polynomial into a list of dictionaries
         
         output = []
@@ -65,9 +66,12 @@ class Polynomial:
 
         return output
 
-    def differentiate(self, varToDiff:str=None):
-        if not varToDiff and len(self._get_variables(self.polynomial)) != 1:
-            raise TypeError('cannot implicitly detect variable for polynomials of multiple variables')
+    def differentiate(self, varToDiff:str=None) -> Polynomial:
+        if not varToDiff:
+            if len(self._get_variables(self.polynomial)) != 1:
+                raise TypeError('cannot implicitly detect variable for polynomials of multiple variables')
+            else:
+                varToDiff = self._get_variables(self.polynomial)[0]
         
         outputPolynomial = []
         for term in self.polynomial:
@@ -88,7 +92,7 @@ class Polynomial:
 
         return Polynomial(outputPolynomial)
 
-    def integrate(self, varToIntegrate:str):
+    def integrate(self, varToIntegrate:str) -> Polynomial:
         outputPolynomial = []
         for term in self.polynomial:
             termToEdit = {}
@@ -108,7 +112,7 @@ class Polynomial:
 
         return Polynomial(outputPolynomial)
 
-    def integrate_definite(self, varToIntegrate:str, max:int, min:int):
+    def integrate_definite(self, varToIntegrate:str, max:int, min:int) -> Polynomial:
         integrated = self.integrate(varToIntegrate)
         outputs = [[], []]
         limits = [max, min]
@@ -212,7 +216,7 @@ class Polynomial:
         self.polynomial = self.consolidate(outputPolynomial)
         return self
 
-    def __str__(self):
+    def __str__(self) -> str:
         output = ''
 
         i = 0
@@ -247,7 +251,10 @@ class Polynomial:
                 
         return output
 
-    def __getitem__(self, variable:str):
+    def __repr__(self) -> str:
+        return f'polynomial.Polynomial({self.polynomial})'
+
+    def __getitem__(self, variable:str) -> Polynomial:
         output = []
         
         for term in self.polynomial:
@@ -256,7 +263,7 @@ class Polynomial:
 
         return Polynomial(output)
 
-    def __eq__(self, other):
+    def __eq__(self, other:Polynomial) -> bool:
         equal = True
 
         for term in self.polynomial:
@@ -273,7 +280,7 @@ class Polynomial:
 
         return equal
 
-    def _int_if_pos(self, num):
+    def _int_if_pos(self, num:Union[float, str]) -> Union[int, float, str]:
         #print(f'checking if {num} can be int') #debug
         try:
             assert int(num) == num
@@ -284,7 +291,7 @@ class Polynomial:
         else:
             return int(num)
 
-    def get_variables(self, polynomial:str):
+    def get_variables(self, polynomial:str) -> list:
         variables = set()
         try:
             for character in polynomial:
@@ -297,7 +304,7 @@ class Polynomial:
 
         return list(variables)
 
-    def _trim_num(self, string:str, side:str):
+    def _trim_num(self, string:str, side:str) -> float:
         #print(f'trimming {string}') #debug
         numPos = self._get_num_pos(string, side)
 
@@ -306,9 +313,9 @@ class Polynomial:
             return float(string[numPos[0]:numPos[1]])
         else:
             #print(f'num not found') #debug
-            return 0
+            return 0.0
 
-    def _get_num_pos(self, string:str, side:str):
+    def _get_num_pos(self, string:str, side:str) -> Union[list, None]:
         if side == 'left':
             numPos = re.search(r'^-?\d+\.?\d*', string)
         else:
@@ -319,7 +326,7 @@ class Polynomial:
         else:
             return None
 
-    def _locate(self, polynomial:list, searchTerm:dict):
+    def _locate(self, polynomial:list, searchTerm:dict) -> Union[int, bool]:
         #print(f'locating term {searchTerm} in polynomial {polynomial}') #debug
         del searchTerm['num']
         for i, term in enumerate(polynomial):
@@ -331,7 +338,7 @@ class Polynomial:
         #print('didn\'t find term') #debug
         return False
 
-    def _consolidate(self, polynomial:list):
+    def _consolidate(self, polynomial:list) -> list:
         output = polynomial.copy()
         termsToRemove = []
         
@@ -354,7 +361,7 @@ class Polynomial:
 
         return output
 
-    def _copy(self, listToCopy:list):
+    def _copy(self, listToCopy:list) -> list:
         output = []
         
         for item in listToCopy:
@@ -362,12 +369,12 @@ class Polynomial:
 
         return output
 
-    def _super(self, num:str):
+    def _super(self, num:str) -> str:
         superscriptMap = {'1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '-': '⁻'}
 
         return self._translate(str(num), superscriptMap)
 
-    def _translate_super(self, string:str):
+    def _translate_super(self, string:str) -> str:
         #print(f'translating {string}') #debug
         superscriptMap = {'1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '-': '⁻'}
 
@@ -388,7 +395,7 @@ class Polynomial:
         else:
             return string
         
-    def _translate(self, string:str, table:dict):
+    def _translate(self, string:str, table:dict) -> str:
         trans = str.maketrans(
             ''.join(table.keys()),
             ''.join(table.values())

@@ -1,8 +1,8 @@
 from math import log
 
-possDigits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#£&%;:€$¥_^§|~<>()[]{}.,!?ςερτυθιοσδφγξλζψωβцгшщзфлджэячиьбюъ'
+_POSS_DIGITS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#£&%;:€$¥_^§|~<>()[]{}.,!?ςερτυθιοσδφγξλζψωβцгшщзфлджэячиьбюъ'
 
-def _convert_denary(num:str, base:int):
+def _convert_denary(num:str, base:int) -> str:
     #Set up variables
     decNum = 0
     decNumArr = []
@@ -15,7 +15,7 @@ def _convert_denary(num:str, base:int):
     	maxBase = 10
   
     for i in range(maxBase):
-    	usedDigits.append(possDigits[i])
+    	usedDigits.append(_POSS_DIGITS[i])
    
     for digit in num:
     	if digit not in usedDigits:
@@ -35,7 +35,7 @@ def _convert_denary(num:str, base:int):
     
     return decNum
   
-def convert_base(num:str, base:int, ansBase:int):
+def convert_base(num:str, base:int, ansBase:int) -> str:
     #Set up variables
     decNum = _convert_denary(num, base)
     usedDigits = []
@@ -49,7 +49,7 @@ def convert_base(num:str, base:int, ansBase:int):
     	maxBase = ansBase
   
     for i in range(maxBase):
-    	usedDigits.append(possDigits[i])
+    	usedDigits.append(_POSS_DIGITS[i])
     
     for digit in num:
     	if digit not in usedDigits:
@@ -76,7 +76,7 @@ def convert_base(num:str, base:int, ansBase:int):
   
     return ans
 
-def _convert_dual_base_denary(num:str, outerBase:int, innerBase:int):
+def _convert_dual_base_denary(num:str, outerBase:int, innerBase:int) -> str:
     #Convert a number from a dual base to denary
     innerSize = int(log(outerBase, innerBase))
     
@@ -93,7 +93,7 @@ def _convert_dual_base_denary(num:str, outerBase:int, innerBase:int):
 
     #Get the decimal values of all of the digits
     for innerBaseNum in numArr:
-        decNumArr.append(convert_denary(innerBaseNum, innerBase))
+        decNumArr.append(_convert_denary(innerBaseNum, innerBase))
     decNumArr.reverse()
 
     #Add the decimal values to the answer, multiplying by the base raised to the power equal to the column number
@@ -102,22 +102,19 @@ def _convert_dual_base_denary(num:str, outerBase:int, innerBase:int):
 
     return decNum
 
-def convert_from_dual_base(num:str, outerBase:int, innerBase:int, ansBase:int):
+def convert_from_dual_base(num:str, outerBase:int, innerBase:int, ansBase:int) -> str:
     #Convert a number from a dual base to any other base
-    innerSize = int(log(outerBase, innerBase))
     decNum = _convert_dual_base_denary(num, outerBase, innerBase)
     ans = convert_base(str(decNum), 10, ansBase)
     return ans
 
-def convert_to_dual_base(num:str, base:int, ansOuterBase:int, ansInnerBase:int):
+def convert_to_dual_base(num:str, base:int, ansOuterBase:int, ansInnerBase:int) -> str:
     #Convert a number from any base to a dual base
     innerSize = int(log(ansOuterBase, ansInnerBase))
-    decNum = _convert_denary(num, base)
-    ansArr = []
     ans = ''
 
     #Convert the number to the outer base
-    outerBaseNum = _convert_base(num, base, ansOuterBase)
+    outerBaseNum = convert_base(num, base, ansOuterBase)
 
     #Convert each digit to the inner base
     for digit in outerBaseNum:
@@ -128,8 +125,6 @@ def convert_to_dual_base(num:str, base:int, ansOuterBase:int, ansInnerBase:int):
 
     return ans
 
-def convert_between_dual_bases(num:str, outerBase:str, innerBase:str, ansOuterBase:str, ansInnerBase:str):
-    innerSize = int(log(outerBase, innerBase))
-    ansInnerSize = int(log(ansOuterBase, ansInnerBase))
+def convert_between_dual_bases(num:str, outerBase:str, innerBase:str, ansOuterBase:str, ansInnerBase:str) -> str:
     temp = convert_from_dual_base(num, outerBase, innerBase, 6)
     return convert_to_dual_base(temp, 6, ansOuterBase, ansInnerBase)

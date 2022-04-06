@@ -1,30 +1,31 @@
 import re
+from typing import Union
 
 class Fraction:
-    def __init__(self, fraction, listInput=False):
-        if isinstance(fraction, list):
+    def __init__(self, fraction:Union[list, str, int, float]):
+        if type(fraction) is list:
             self.num = fraction[0]
             self.dem = fraction[1]
             
-        elif isinstance(fraction, str):
+        elif type(fraction) is str:
             fractionNums = fraction.split('/')
             fractionNums = [int(i) for i in fractionNums]
             self.num = fractionNums[0]
             self.dem = fractionNums[1]
 
-        elif isinstance(fraction, int) or isinstance(fraction, float):
+        elif type(fraction) is int or type(fraction) is float:
             fractionNums = self._num_to_fraction(fraction)
             self.num = fractionNums[0]
             self.dem = fractionNums[1]
             
         else:
-            raise TypeError(f'cannot parse type {type(fraction)}')
+            raise TypeError(f'cannot parse type {type(fraction).__name__}')
 
         self._simplify()
 
     #Get the greatest common divisor of the numerator and denominator
     @property
-    def GCD(self):
+    def GCD(self) -> int:
         num1 = self.num
         num2 = self.dem
 
@@ -44,7 +45,7 @@ class Fraction:
         return abs(num2)
 
     #Simplify the fraction
-    def _simplify(self):
+    def _simplify(self) -> None:
         #print(f'simplifying {self}') #debug
         num = self.num
         dem = self.dem
@@ -62,7 +63,7 @@ class Fraction:
         self.dem = int(dem)
 
     #Simplify a given fraction in list form
-    def _simplify_nums(nums):
+    def _simplify_nums(nums) -> Fraction:
         return Fraction(nums, True).nums
 
     #Automatically simplify fractions
@@ -74,60 +75,63 @@ class Fraction:
         return inner
 
     #Output the numbers as a fraction
-    def __str__(self):
+    def __str__(self) -> str:
         return (f'{self.num}/{self.dem}')
 
+    def __repr__(self) -> str:
+        return f'fraction.Fraction([{self.num}, {self.dem}])'
+
     #Output the fraction as an int
-    def __int__(self):
+    def __int__(self) -> int:
         return int(self.num / self.dem)
 
     #Output the fraction as a float
-    def __float__(self):
+    def __float__(self) -> float:
         return self.num / self.dem
 
     #Compares this fraction to another
-    def __eq__(self, other):
+    def __eq__(self, other:Fraction) -> bool:
         return self.num == other.num and self.dem == other.dem
 
     #Compares this fraction to another and inverts
-    def __ne__(self, other):
+    def __ne__(self, other:Fraction) -> bool:
         return not self.__eq__(other)
 
-    def __gt__(self, other):
+    def __gt__(self, other:Fraction) -> bool:
         return float(self) > float(other)
 
-    def __ge__(self, other):
+    def __ge__(self, other:Fraction) -> bool:
         return float(self) >= float(other)
 
-    def __lt__(self, other):
+    def __lt__(self, other:Fraction) -> bool:
         return float(self) < float(other)
 
-    def __le__(self, other):
+    def __le__(self, other:Fraction) -> bool:
         return float(self) <= float(other)
 
     #Adds two given fractions
-    def _add(self, fraction1:Fraction, fraction2:Fraction):
+    def _add(self, fraction1:Fraction, fraction2:Fraction) -> Fraction:
         num = (fraction1.num * fraction2.dem) + (fraction1.dem * fraction2.num)
         dem = fraction1.dem * fraction2.dem
 
         return Fraction([num, dem])
 
     #Subtracts two given fractions
-    def _sub(self, fraction1:Fraction, fraction2:Fraction):
+    def _sub(self, fraction1, fraction2):
         num = (fraction1.num * fraction2.dem) - (fraction1.dem * fraction2.num)
         dem = fraction1.dem * fraction2.dem
 
         return Fraction([num, dem])
 
     #Multiplies two given fractions
-    def _mul(self, fraction1:Fraction, fraction2:Fraction):
+    def _mul(self, fraction1, fraction2):
         num = fraction1.num * fraction2.num
         dem = fraction1.dem * fraction2.dem
 
         return Fraction([num, dem])
 
     #Divides two given fractions
-    def _truediv(self, fraction1:Fraction, fraction2:Fraction):
+    def _truediv(self, fraction1, fraction2):
         num = fraction1.num * fraction2.dem
         dem = fraction1.dem * fraction2.num
 

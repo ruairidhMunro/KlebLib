@@ -8,7 +8,9 @@ if __name__ == '__main__':
             series.Series([3, 4], int),
             series.Series([5, 6], int)
         ],
-        series.Series
+        series.Series,
+        int
     )
     
-    print(series1)
+    test1 = Test('fraction', opType='add', fraction1='1/2', fraction2='3/4')
+    print(test1)

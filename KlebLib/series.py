@@ -1,5 +1,7 @@
+from typing import Any
+
 class Series:
-    def __init__(self, item:any, selfType:type=None, strict:bool=False):
+    def __init__(self, item:Any, selfType:type=None, strictType:type=None):
         #print(f'creating series from item {item}') #debug
         skip = False
 
@@ -37,10 +39,20 @@ class Series:
             else:
                 self.next = None
 
+        if strictType is not None:
+            if selfType is not Series:
+                raise TypeError('series type must be series if strict type is given')
+
+            self.strictType = strictType
+            for series in self:
+                if series.type != strictType:
+                    raise TypeError(f'series type {series.type} must be equal to strict type {strictType}')
+        else:
+            self.strictType = None
+
     def __len__(self):
         if self.value is not None:
             length = 1
-            done = False
             current = self
             while current.next is not None:
                 length += 1
@@ -63,15 +75,6 @@ class Series:
 
         #print('got objects') #debug
         return result
-
-    @property
-    def last(self):
-        current = self
-        done = False
-        while current.next is not None:
-            current = current.next
-
-        return current
 
     def __getitem__(self, index:int):
         if index >= len(self) or -index > len(self):
@@ -112,7 +115,11 @@ class Series:
         result = self.deepcopy()
 
         if type(other) is self.type:
+            if result.strictType is not None and type(other) is not result.strictType:
+                raise TypeError(f'series of type {other.type} cannot be appended to series of strict type {self.strictType}')
+                
             result.objects[-1].next = Series(other, type(other))
+            return result
 
         elif type(other) is list or type(other) is tuple or type(other) is set:
             other = Series(other)
@@ -176,6 +183,26 @@ class Series:
         output += '>'
         return output
 
+    def __repr__(self):
+        output = 'series.Series(['
+        for i, item in enumerate(self):
+            output += repr(item)
+            
+            if i != len(self) - 1:
+                output += ', '
+
+        if self.type is Series:
+            output += f'], series.Series'
+        else:
+            output += f'], {self.type.__name__}'
+            
+        if self.strictType is not None:
+            output += f', {self.strictType.__name__}'
+
+        output += ')'
+
+        return output
+
     def __list__(self):
         return [item for item in self]
 
@@ -183,19 +210,19 @@ class Series:
         return set(list(self))
 
     def copy(self):
-        output = Series(self[0])
+        output = Series(self[0], self.type, self.strictType)
         current = output
         for i in range(1, len(self)):
-            current.next = Series(self[i])
+            current.next = Series(self[i], self.type, self.strictType)
             current = current.next
 
         return output
 
     def deepcopy(self):
         try:
-            output = Series(self[0].deepcopy())
+            output = Series(self[0].deepcopy(), self.type, self.strictType)
         except AttributeError:
-            output = Series(self[0])
+            output = Series(self[0], self.type, self.strictType)
             current = output
             for i in range(1, len(self)):
                 current.next = Series(self[i])
@@ -203,7 +230,7 @@ class Series:
         else:
             current = output
             for i in range(1, len(self)):
-                current.next = Series(self[i].deepcopy())
+                current.next = Series(self[i].deepcopy(), self.type, self.strictType)
                 current = current.next
 
         return output

@@ -1,14 +1,17 @@
 from KlebLib.baseconversion import *
 
-def add(base:int, *nums:str):
+def add(base:int, *nums:str) -> str:
     #Check validity of input
-    if not isinstance(base, int):
-        raise ValueError(f'Expected int, got {type(base)}')
+    if type(base) is not int:
+        if type(base) is float:
+            base = int(base)
+        else:
+            raise ValueError(f'Expected int, got {type(base).__name__}')
     
     #Set up nums
     nums = list(nums)
     if len(nums) < 2:
-        raise ValueError('List nums must be of length 2 or greater')
+        raise ValueError('tuple nums must be of length 2 or greater')
   
     #print(f'{nums} start') #debug
 

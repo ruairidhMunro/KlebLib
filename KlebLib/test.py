@@ -1,36 +1,49 @@
+from KlebLib import fraction, polynomial, baseconversion, universaladdition, series
+from typing import Any
+
 class Test:
     def __init__(self, testType:str, **kwargs):
         self.testType = testType
         self.kwargs = kwargs
 
-    def test(self, *args):
+    def test(self, *args:Any) -> str:
         if self.testType == 'fraction':
-            return self.fractionTest(args)
+            return self._fraction_test(args)
         elif self.testType == 'polynomial':
-            return self.polynomialTest(args)
-        elif self.testType == 'baseConversion':
-            return self.conversionTest(args)
-        elif self.testType == 'universalAddition':
-            return self.universalAdditionTest(args)
+            return self._polynomial_test(args)
+        elif self.testType == 'baseconversion':
+            return self._conversion_test(args)
+        elif self.testType == 'universaladdition':
+            return self._universal_addition_test(args)
+        elif self.testType == 'series':
+            return self._series_test(args)
 
-    @property
-    def variables(self):
-        return {'testType': self.testType, 'kwargs': self.kwargs}
+    def __repr__(self):
+        output = f'Test({self.testType}, '
+
+        #print(f'kwargs are of length {len(self.kwargs)}') #debug
+        for i, (k, v) in enumerate(self.kwargs.items()):
+            output += f'{k}=\'{v}\''
+            if i != len(self.kwargs.keys()) - 1:
+                output += ', '
+
+        output += ')'
+        return output
 
     #Individual tests
 
-    def _fractionTest(self, args):
+    def _fraction_test(self, args):
         fraction1 = fraction.Fraction(self.kwargs['fraction1'])
         fraction2 = fraction.Fraction(self.kwargs['fraction2'])
 
         opType = self.kwargs['opType']
-        if opType == 'add':
+        if opType == 'add' or opType == '+':
             fraction3 = fraction1 + fraction2
-        elif opType == 'subtract':
+        elif opType == 'subtract' or opType == '-':
             fraction3 = fraction1 - fraction2
-        elif opType == 'multiply':
+        elif opType == 'multiply' or opType == '*':
             fraction3 = fraction1 * fraction2
-        elif opType == 'divide':
+        elif opType == 'divide' or opType == '/':
             fraction3 = fraction1 / fraction2
 
         return str(fraction3)
@@ -61,3 +74,7 @@ class Test:
         base = self.kwargs['base']
 
         return universaladdition.add(base, num1, num2)
+
+    def _series_test(self, args):
+        testSeries = series.Series(args[0], args[1], args[2])
+        return testSeries
