@@ -42,10 +42,20 @@ class Series:
             return 0
 
     @property
+    def objects(self):
+        result = [self]
+        current = self
+        while current.next is not None:
+            current = current.next
+            result.append(current)
+
+        return result
+
+    @property
     def last(self):
         current = self
         done = False
-        while current.next:
+        while current.next is not None:
             current = current.next
 
         return current
@@ -54,25 +64,25 @@ class Series:
         if index >= len(self) or -index > len(self):
             raise IndexError('series index out of range')
 
-        current = self
-        if index >= 0:
-            for i in range(index):
-                current = current.next
-        else:
-            for i in range(len(self) - abs(index)):
-                current = current.next
-
-        return current.value
+        return self.objects[index].value
 
     def __setitem__(self, index:int, value):
-        if index >= len(self):
+        if index >= len(self) or -index > len(self):
             raise IndexError('series index out of range')
 
-        current = self
-        for i in range(index):
-            current = current.next
+        self.objects[index].value = value
 
-        current.value = value
+    def __delitem__(self, index):
+        if index >= len(self) or -index > len(self):
+            raise IndexError('series index out of range')
+            
+        self.objects[index-1].next = self.objects[index+1]
+
+    def insert(self, index, value):
+        temp = self.objects[index]
+        self.objects[index-1].next = Series(value)
+        self.objects[index].next = temp
+        del temp
 
     def __iter__(self):
         self.iterIndex = -1
@@ -87,15 +97,18 @@ class Series:
 
     def __add__(self, other):
         result = self.deepcopy()
+
+        if type(other) is list or type(other) is tuple or type(other) is set:
+            other = Series(other)
         
         if type(other) is Series:
             if self.type != other.type:
                 raise TypeError(f'cannot add series of type {other.type} to series of type {self.type}')
 
-            result.last.next = other
+            result.objects[-1].next = other
             
         elif type(other) is self.type:
-            result.last.next = Series(other)
+            result.objects[-1].next = Series(other)
             
         else:
             raise TypeError(f'cannot add object of type {type(other)} to series of type {self.type}')
@@ -112,14 +125,17 @@ class Series:
         return output
 
     def __iadd__(self):
+        if type(other) is list or type(other) is tuple or type(other) is set:
+            other = Series(other)
+            
         if type(other) is Series:
             if self.type != other.type:
                 raise TypeError(f'cannot add series of type {other.type} to series of type {self.type}')
 
-            self.last.next = other
+            self.objects[-1].next = other
             
         elif type(other) is self.type:
-            self.last.next = Series(other)
+            self.objects[-1].next = Series(other)
             
         else:
             raise TypeError(f'cannot add object of type {type(other)} to series of type {self.type}')
@@ -139,6 +155,9 @@ class Series:
 
     def __list__(self):
         return [item for item in self]
+
+    def __set__(self):
+        return set(list(self))
 
     def copy(self):
         output = Series(self[0])
