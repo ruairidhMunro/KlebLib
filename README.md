@@ -13,4 +13,4 @@ KlebLib currently includes:
 Comprehensive (ish) documentation for KlebLib can be found here: https://github.com/Spartan2909/KlebLib/wiki
 
 ## Acknowledgements
-* Kai Kerlaff, for his work on baseconversion and multibaseaddition
+* Kai Kerlaff, for his work on baseconversion and universaladdition
