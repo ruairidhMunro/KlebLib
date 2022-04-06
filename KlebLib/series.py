@@ -1,10 +1,20 @@
 class Series:
-    def __init__(self, item, selfType:type=None):
+    def __init__(self, item, selfType:type=None, strict:bool=False):
         #print(f'creating series from item {item}') #debug
-        
-        if type(item) is set or type(item) is tuple:
+        skip = False
+
+        if type(item) is selfType:
+            #print('using given type') #debug
+            self.value = item
+            self.type = selfType
+            self.next = None
+            skip = True
+            
+        elif type(item) is set or type(item) is tuple:
+            #print(f'converting item from {type(item)} to list') #debug
             item = list(item)
-        elif type(item) is str or type(item) is int or type(item) is float:
+            
+        elif type(item) is not list:
             if selfType and type(item) is not selfType:
                 raise TypeError(f'type of given item {item} is not the same as given type {selfType}')
                 
@@ -12,7 +22,7 @@ class Series:
             self.type = type(item)
             self.next = None
             
-        if type(item) is list:
+        if (type(item) is list) and (not skip):
             if selfType and type(item[0]) is not selfType:
                 raise TypeError(f'type of given item {item[0]} is not the same as given type {selfType}')
                 
@@ -43,12 +53,15 @@ class Series:
 
     @property
     def objects(self):
+        #print(f'getting objects of series with head {self.value}') #debug
         result = [self]
         current = self
         while current.next is not None:
+            #print(f'value of current object is {current.value}') #debug
             current = current.next
             result.append(current)
 
+        #print('got objects') #debug
         return result
 
     @property
@@ -98,7 +111,10 @@ class Series:
     def __add__(self, other):
         result = self.deepcopy()
 
-        if type(other) is list or type(other) is tuple or type(other) is set:
+        if type(other) is self.type:
+            result.objects[-1].next = Series(other, type(other))
+
+        elif type(other) is list or type(other) is tuple or type(other) is set:
             other = Series(other)
         
         if type(other) is Series:
@@ -106,9 +122,6 @@ class Series:
                 raise TypeError(f'cannot add series of type {other.type} to series of type {self.type}')
 
             result.objects[-1].next = other
-            
-        elif type(other) is self.type:
-            result.objects[-1].next = Series(other)
             
         else:
             raise TypeError(f'cannot add object of type {type(other)} to series of type {self.type}')
@@ -119,13 +132,25 @@ class Series:
         if type(other) is self.type:
             output = Series(other)
             output.next = self.deepcopy()
+            
+        elif type(other) is list or type(other) is tuple or type(other) is set:
+            output = Series(other)
+            if output.type != self.type:
+                raise TypeError(f'cannot add series of type {self.type} to container containing type {other.type}')
+
+            output.objects[-1].next = self.deepcopy()
+            
         else:
             raise IndexError(f'cannot add series of type {self.type} to object of type {type(other)}')
 
         return output
 
-    def __iadd__(self):
-        if type(other) is list or type(other) is tuple or type(other) is set:
+    def __iadd__(self, other):
+        if type(other) is self.type:
+            self.objects[-1].next = Series(other, type(other))
+            return self
+        
+        elif type(other) is list or type(other) is tuple or type(other) is set:
             other = Series(other)
             
         if type(other) is Series:
@@ -134,23 +159,21 @@ class Series:
 
             self.objects[-1].next = other
             
-        elif type(other) is self.type:
-            self.objects[-1].next = Series(other)
-            
         else:
             raise TypeError(f'cannot add object of type {type(other)} to series of type {self.type}')
 
         return self
 
     def __str__(self):
-        output = '['
+        #print(f'coverting series with head value {self.value} to str') #debug
+        output = '<'
         for i, item in enumerate(self):
             output += str(item)
             
             if i != len(self) - 1:
                 output += ', '
 
-        output += ']'
+        output += '>'
         return output
 
     def __list__(self):
