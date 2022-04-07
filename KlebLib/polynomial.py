@@ -66,7 +66,7 @@ class Polynomial:
 
         return output
 
-    def differentiate(self, varToDiff:str=None) -> Polynomial:
+    def differentiate(self, varToDiff:str=None):
         if not varToDiff:
             if len(self._get_variables(self.polynomial)) != 1:
                 raise TypeError('cannot implicitly detect variable for polynomials of multiple variables')
@@ -92,7 +92,7 @@ class Polynomial:
 
         return Polynomial(outputPolynomial)
 
-    def integrate(self, varToIntegrate:str) -> Polynomial:
+    def integrate(self, varToIntegrate:str):
         outputPolynomial = []
         for term in self.polynomial:
             termToEdit = {}
@@ -112,7 +112,7 @@ class Polynomial:
 
         return Polynomial(outputPolynomial)
 
-    def integrate_definite(self, varToIntegrate:str, max:int, min:int) -> Polynomial:
+    def integrate_definite(self, varToIntegrate:str, max:int, min:int):
         integrated = self.integrate(varToIntegrate)
         outputs = [[], []]
         limits = [max, min]
@@ -251,10 +251,10 @@ class Polynomial:
                 
         return output
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         return f'polynomial.Polynomial({self.polynomial})'
 
-    def __getitem__(self, variable:str) -> Polynomial:
+    def __getitem__(self, variable):
         output = []
         
         for term in self.polynomial:
@@ -263,7 +263,7 @@ class Polynomial:
 
         return Polynomial(output)
 
-    def __eq__(self, other:Polynomial) -> bool:
+    def __eq__(self, other):
         equal = True
 
         for term in self.polynomial:

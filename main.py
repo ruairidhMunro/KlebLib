@@ -4,13 +4,33 @@ from KlebLib.test import Test
 if __name__ == '__main__':
     series1 = series.Series(
         [
-            series.Series([1, 2], int),
-            series.Series([3, 4], int),
-            series.Series([5, 6], int)
+            series.Series(
+                [
+                    series.Series([1, 2], int),
+                    series.Series([3, 4], int)
+                ],
+                series.Series,
+                int
+            ),
+            series.Series(
+                [
+                    series.Series([5, 6], int),
+                    series.Series([7, 8], int)
+                ],
+                series.Series,
+                int
+            ),
+            series.Series(
+                [
+                    series.Series([9, 10], int),
+                    series.Series([11, 12], int)
+                ],
+                series.Series,
+                int
+            )
         ],
         series.Series,
-        int
+        series.Series
     )
     
-    test1 = Test('fraction', opType='add', fraction1='1/2', fraction2='3/4')
-    print(test1)
+    print(repr(series1))

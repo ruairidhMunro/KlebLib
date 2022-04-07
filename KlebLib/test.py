@@ -54,12 +54,12 @@ class Test:
         differentiated = testPolynomial.differentiate(args[0])
         integrated = testPolynomial.integrate(args[0])
 
-        return {
+        return str({
             'polynomial': testPolynomial.polynomial,
             'readable': str(testPolynomial),
             'differentiated': differentiated.polynomial,
             'integrated': integrated.polynomial
-        }
+        })
 
     def _conversion_test(self, args):
         num = self.kwargs['num']
@@ -76,5 +76,6 @@ class Test:
         return universaladdition.add(base, num1, num2)
 
     def _series_test(self, args):
-        testSeries = series.Series(args[0], args[1], args[2])
-        return testSeries
+        testSeries = series.Series(self.kwargs['data'], self.kwargs['type'], self.kwargs['strictType'])
+        return str({'base series': str(testSeries),
+                    'base series + arg': str(testSeries + args[0])})

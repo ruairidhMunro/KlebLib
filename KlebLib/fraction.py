@@ -63,7 +63,7 @@ class Fraction:
         self.dem = int(dem)
 
     #Simplify a given fraction in list form
-    def _simplify_nums(nums) -> Fraction:
+    def _simplify_nums(nums):
         return Fraction(nums, True).nums
 
     #Automatically simplify fractions
@@ -90,27 +90,27 @@ class Fraction:
         return self.num / self.dem
 
     #Compares this fraction to another
-    def __eq__(self, other:Fraction) -> bool:
+    def __eq__(self, other):
         return self.num == other.num and self.dem == other.dem
 
     #Compares this fraction to another and inverts
-    def __ne__(self, other:Fraction) -> bool:
+    def __ne__(self, other):
         return not self.__eq__(other)
 
-    def __gt__(self, other:Fraction) -> bool:
+    def __gt__(self, other):
         return float(self) > float(other)
 
-    def __ge__(self, other:Fraction) -> bool:
+    def __ge__(self, other):
         return float(self) >= float(other)
 
-    def __lt__(self, other:Fraction) -> bool:
+    def __lt__(self, other):
         return float(self) < float(other)
 
-    def __le__(self, other:Fraction) -> bool:
+    def __le__(self, other):
         return float(self) <= float(other)
 
     #Adds two given fractions
-    def _add(self, fraction1:Fraction, fraction2:Fraction) -> Fraction:
+    def _add(self, fraction1, fraction2):
         num = (fraction1.num * fraction2.dem) + (fraction1.dem * fraction2.num)
         dem = fraction1.dem * fraction2.dem
 

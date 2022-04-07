@@ -197,7 +197,10 @@ class Series:
             output += f'], {self.type.__name__}'
             
         if self.strictType is not None:
-            output += f', {self.strictType.__name__}'
+            if self.strictType is Series:
+                output += ', series.Series'
+            else:
+                output += f', {self.strictType.__name__}'
 
         output += ')'
 
