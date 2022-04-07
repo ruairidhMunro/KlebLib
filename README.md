@@ -1,6 +1,6 @@
 # KlebLib
 
-KlebLib is a Python library consisting of a variety of classes and functions of questionable usefulness.
+KlebLib is a Python library consisting of a variety of classes and functions, all of questionable usefulness.
 
 KlebLib currently includes:
 * Fractions
