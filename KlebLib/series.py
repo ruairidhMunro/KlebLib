@@ -1,7 +1,7 @@
 from typing import Any
 
 class Series:
-    def __init__(self, item:Any, selfType:type=None, strictType:type=None):
+    def __init__(self, item:Any, selfType:type=None, subType:type=None):
         #print(f'creating series from item {item}') #debug
         skip = False
 
@@ -39,16 +39,16 @@ class Series:
             else:
                 self.next = None
 
-        if strictType is not None:
+        if subType is not None:
             if selfType is not Series:
-                raise TypeError('series type must be series if strict type is given')
+                raise TypeError('series type must be series if subtype is given')
 
-            self.strictType = strictType
+            self.subType = subType
             for series in self:
-                if series.type != strictType:
-                    raise TypeError(f'series type {series.type} must be equal to strict type {strictType}')
+                if series.type != subType:
+                    raise TypeError(f'series type {series.type} must be equal to subtype {subType}')
         else:
-            self.strictType = None
+            self.subType = None
 
     def __len__(self):
         if self.value is not None:
@@ -115,8 +115,8 @@ class Series:
         result = self.deepcopy()
 
         if type(other) is self.type:
-            if result.strictType is not None and type(other) is not result.strictType:
-                raise TypeError(f'series of type {other.type} cannot be appended to series of strict type {self.strictType}')
+            if result.subType is not None and type(other) is not result.subType:
+                raise TypeError(f'series of type {other.type} cannot be appended to series of subtype {self.subType}')
                 
             result.objects[-1].next = Series(other, type(other))
             return result
@@ -196,11 +196,11 @@ class Series:
         else:
             output += f'], {self.type.__name__}'
             
-        if self.strictType is not None:
-            if self.strictType is Series:
+        if self.subType is not None:
+            if self.subType is Series:
                 output += ', series.Series'
             else:
-                output += f', {self.strictType.__name__}'
+                output += f', {self.subType.__name__}'
 
         output += ')'
 
@@ -213,27 +213,29 @@ class Series:
         return set(list(self))
 
     def copy(self):
-        output = Series(self[0], self.type, self.strictType)
+        output = Series(self[0], self.type, self.subType)
         current = output
         for i in range(1, len(self)):
-            current.next = Series(self[i], self.type, self.strictType)
+            current.next = Series(self[i], self.type, self.subType)
             current = current.next
 
         return output
 
     def deepcopy(self):
         try:
-            output = Series(self[0].deepcopy(), self.type, self.strictType)
+            output = Series(self[0].deepcopy(), self.type, self.subType)
+            
         except AttributeError:
-            output = Series(self[0], self.type, self.strictType)
+            output = Series(self[0], self.type, self.subType)
             current = output
             for i in range(1, len(self)):
                 current.next = Series(self[i])
                 current = current.next
-        else:
+                
+        else: #continue code in try block
             current = output
             for i in range(1, len(self)):
-                current.next = Series(self[i].deepcopy(), self.type, self.strictType)
+                current.next = Series(self[i].deepcopy(), self.type, self.subType)
                 current = current.next
 
         return output

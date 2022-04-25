@@ -56,11 +56,11 @@ class Fraction:
             num = -num
             dem = -dem
 
-        num /= self.GCD
-        dem /= self.GCD
+        num //= self.GCD
+        dem //= self.GCD
 
-        self.num = int(num)
-        self.dem = int(dem)
+        self.num = num
+        self.dem = dem
 
     #Simplify a given fraction in list form
     def _simplify_nums(nums):

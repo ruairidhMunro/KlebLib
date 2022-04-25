@@ -1,9 +1,9 @@
 def ceiling(num:float, decPlaces:int=0) -> float:
     #Check validity of input
     if not isinstance(num, int) and not isinstance(num, float):
-        raise ValueError(f'Expected int or float, got {type(num)}')
+        raise ValueError(f'Expected int or float, got {type(num).__name__}')
     if not isinstance(decPlaces, int):
-        raise ValueError(f'Expected int, got {type(decPlaces)}')
+        raise ValueError(f'Expected int, got {type(decPlaces).__name__}')
     
     #Set up variables
     overflow = False
@@ -45,8 +45,8 @@ def ceiling(num:float, decPlaces:int=0) -> float:
     num = ''
     for i in numDigits:
         num += str(i)
-    num = float(num)
-    return num
+        
+    return float(num)
     
 def smartRound(num:float, decPlaces:int=0) -> float:
     if str(num)[decPlaces + 1] >= 5:

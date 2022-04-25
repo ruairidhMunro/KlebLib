@@ -11,15 +11,15 @@ class Polynomial:
             self.polynomial = polynomial
         else:
             self.polynomial = self._parse(polynomial, self.get_variables(polynomial))
-        #print(self.polynomials) #debug
+        #print(self.polynomial) #debug
 
     def _parse(self, polynomial:str, variables:list) -> list:
         #parse the polynomial into a list of dictionaries
         
-        output = []
         #print(f'parsing polynomial {polynomial}') #debug
+        output = []
         negatives = []
-        additions = re.finditer(r'(\s\+\s)|(\s-\s)', polynomial)
+        additions = re.finditer(r'\s+[+-]\s+', polynomial)
         startNegative = re.search(r'^-', polynomial)
         if startNegative:
             negatives.append(0)
@@ -67,11 +67,12 @@ class Polynomial:
         return output
 
     def differentiate(self, varToDiff:str=None):
-        if not varToDiff:
-            if len(self._get_variables(self.polynomial)) != 1:
+        if varToDiff is None:
+            #print(f'attempting to imply variable from polnomial with variables {self.get_variables(self.polynomial)}') #debug
+            if len(self.get_variables(self.polynomial)) != 1:
                 raise TypeError('cannot implicitly detect variable for polynomials of multiple variables')
             else:
-                varToDiff = self._get_variables(self.polynomial)[0]
+                varToDiff = self.get_variables(self.polynomial)[0]
         
         outputPolynomial = []
         for term in self.polynomial:
@@ -92,7 +93,13 @@ class Polynomial:
 
         return Polynomial(outputPolynomial)
 
-    def integrate(self, varToIntegrate:str):
+    def integrate(self, varToIntegrate:str=None):
+        if varToIntegrate is None:
+            if len(self.get_variables(self.polynomial)) != 1:
+                raise TypeError('cannot implicitly detect variable for polynomials of multiple variables')
+            else:
+                varToIntegrate = self.get_variables(self.polynomial)[0]
+                
         outputPolynomial = []
         for term in self.polynomial:
             termToEdit = {}
@@ -216,7 +223,7 @@ class Polynomial:
         self.polynomial = self.consolidate(outputPolynomial)
         return self
 
-    def __str__(self) -> str:
+    def __str__(self):
         output = ''
 
         i = 0
@@ -253,6 +260,21 @@ class Polynomial:
 
     def __repr__(self):
         return f'polynomial.Polynomial({self.polynomial})'
+
+    def __float__(self):
+        temp = self.polynomial[0].copy()
+        del temp['num']
+        
+        if len(self.polynomial) == 1 and not temp:
+            return float(self.polynomial[0]['num'])
+        else:
+            raise ValueError('cannot convert polynomial with variables to float')
+
+    def __int__(self):
+        try:
+            return int(float(self))
+        except ValueError:
+            raise ValueError('cannot convert polynomial with variables to int')
 
     def __getitem__(self, variable):
         output = []
@@ -291,16 +313,20 @@ class Polynomial:
         else:
             return int(num)
 
-    def get_variables(self, polynomial:str) -> list:
+    def get_variables(self, polynomial:Union[list, str]) -> list:
         variables = set()
-        try:
+
+        if type(polynomial) is str:
             for character in polynomial:
                 #If it is a letter
                 if (ord(character) >= 65 and ord(character) <= 90) or (ord(character) >= 97 and ord(character) <= 122):
                     variables.add(character)
-        #If polynomial is not a string
-        except TypeError:
-            return []
+
+        elif type(polynomial) is list:
+            for term in polynomial:
+                for variable in term:
+                    if variable != 'num':
+                        variables.add(variable)
 
         return list(variables)
 

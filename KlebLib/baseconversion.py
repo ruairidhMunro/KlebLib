@@ -126,5 +126,5 @@ def convert_to_dual_base(num:str, base:int, ansOuterBase:int, ansInnerBase:int) 
     return ans
 
 def convert_between_dual_bases(num:str, outerBase:str, innerBase:str, ansOuterBase:str, ansInnerBase:str) -> str:
-    temp = convert_from_dual_base(num, outerBase, innerBase, 6)
-    return convert_to_dual_base(temp, 6, ansOuterBase, ansInnerBase)
+    temp = convert_from_dual_base(num, outerBase, innerBase, 64)
+    return convert_to_dual_base(temp, 64, ansOuterBase, ansInnerBase)
