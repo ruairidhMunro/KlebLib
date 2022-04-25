@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "KlebLib"
-version = "1.0.1"
+version = "1.0.0"
 description = "A collection of classes and functions that no-one will ever need"
 license = "MIT"
 authors = ["Caleb Robson <robson.caleb.299@gmail.com>"]
