@@ -162,12 +162,12 @@ class Series:
             
         if type(other) is Series:
             if self.type != other.type:
-                raise TypeError(f'cannot add series of type {other.type} to series of type {self.type}')
+                raise TypeError(f'cannot add series of type {other.type.__name__} to series of type {self.type.__name__}')
 
             self.objects[-1].next = other
             
         else:
-            raise TypeError(f'cannot add object of type {type(other)} to series of type {self.type}')
+            raise TypeError(f'cannot add object of type {type(other).__name__} to series of type {self.type.__name__}')
 
         return self
 

@@ -3,6 +3,8 @@ from typing import Union
 
 class Fraction:
     def __init__(self, fraction:Union[list, str, int, float]):
+        self.skipSimplify = True
+        
         if type(fraction) is list:
             self.num = fraction[0]
             self.dem = fraction[1]
@@ -22,6 +24,15 @@ class Fraction:
             raise TypeError(f'cannot parse type {type(fraction).__name__}')
 
         self._simplify()
+
+    def __setattr__(self, attr, value):
+        super().__setattr__(attr, value)
+        
+        if attr == 'num' or attr == 'dem':
+            if self.skipSimplify and attr == 'dem':
+                self.skipSimplify = False
+            elif not self.skipSimplify:
+                self._simplify()
 
     #Get the greatest common divisor of the numerator and denominator
     @property
@@ -47,6 +58,8 @@ class Fraction:
     #Simplify the fraction
     def _simplify(self) -> None:
         #print(f'simplifying {self}') #debug
+        self.skipSimplify = True
+        
         num = self.num
         dem = self.dem
 
@@ -175,7 +188,7 @@ class Fraction:
             except TypeError:
                 raise TypeError(f'Cannot add type {type(other)} to fraction')
                 
-        return self._mul(self, other)
+        return self._truediv(self, other)
 
     #Adds another fraction to this one and returns a new fraction
     def __radd__(self, number):
@@ -293,8 +306,13 @@ class Fraction:
 
     #Sets the fraction to the top-heavy form of a given mixed fraction
     @mixed.setter
-    def mixed(self, fraction):
-        #Fraction given in form [integerPart, [num, dem]]
+    def mixed(self, fraction:Union[str, list]):
+        #Fraction given in form [integerPart, [num, dem]] or 'integerPart num/dem'
+        if type(fraction) is str:
+            fraction = fraction.split(' ')
+            temp = [int(i) for i in fraction[1].split('/')]
+            fraction = [int(fraction[0]), temp]
+            
         fraction[1][0] += fraction[0] * fraction[1][1]
         self.num = fraction[1][0]
         self.dem = fraction[1][1]
