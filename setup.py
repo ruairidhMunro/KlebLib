@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='KlebLib',
-    version='1.0.0',
+    version='1.0.1',
     author='Caleb Robson',
     author_email='robson.caleb.299@gmail.com',
     packages=['KlebLib'],
