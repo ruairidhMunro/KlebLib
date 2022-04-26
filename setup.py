@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('README.md', 'r') as f:
     long_description = f.read()
@@ -14,5 +14,6 @@ setup(
     description='A collection of classes and functions that no-one will ever need.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    python_requires='>=3.8, <4'
+    python_requires='>=3.8, <4',
+    packages=find_packages(include = ['KlebLib', 'KlebLib.*'], exclude=['KlebLib.tests'])
 )
