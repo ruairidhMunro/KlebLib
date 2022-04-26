@@ -1,4 +1,6 @@
-from KlebLib import baseconversion, fraction, polynomial, rounding, series, test, tree, universaladdition
+from . maths import baseconversion, fraction, polynomial, rounding, universaladdition
+from . structures import series, tree
+from . import test
 
 __all__ = [
     'baseconversion.convert_base',

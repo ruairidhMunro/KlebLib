@@ -1,4 +1,4 @@
-from KlebLib.baseconversion import convert_base
+from .baseconversion import convert_base
 
 __all__ = ['add']
 

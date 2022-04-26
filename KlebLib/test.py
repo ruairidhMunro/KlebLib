@@ -1,12 +1,11 @@
 from KlebLib import fraction, polynomial, baseconversion, universaladdition, series
-from typing import Any
 
 class Test:
     def __init__(self, testType:str, **kwargs):
         self.testType = testType
         self.kwargs = kwargs
 
-    def test(self, *args:Any) -> str:
+    def test(self, *args) -> str:
         if self.testType == 'fraction':
             return self._fraction_test(args)
         elif self.testType == 'polynomial':
