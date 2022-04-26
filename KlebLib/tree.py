@@ -1,3 +1,5 @@
+from typing import Any
+
 class Tree:
     def __new__(cls, item, l=None, r=None, *args, **kwargs):
         if type(item) is Tree:
@@ -5,7 +7,7 @@ class Tree:
         else:
             return super(Tree, cls).__new__(cls, *args, **kwargs)
         
-    def __init__(self, item, l=None, r=None):
+    def __init__(self, item:Any, l=None, r=None):
         #print(f'creating tree from item {item}, left {l}, and right {r}') #debug
         
         if type(item) is dict and l is None and r is None:
@@ -40,7 +42,6 @@ class Tree:
     def __repr__(self):
         return self.value
 
-    @property
     def max_depth(self):
         if self.l is not None:
             lDepth = self.l.max_depth
@@ -57,7 +58,6 @@ class Tree:
         else:
             return rDepth + 1
 
-    @property
     def min_depth(self):
         if self.l is not None:
             lDepth = self.l.min_depth

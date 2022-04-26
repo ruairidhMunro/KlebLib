@@ -82,7 +82,7 @@ class Series:
 
         return self.objects[index].value
 
-    def __setitem__(self, index:int, value):
+    def __setitem__(self, index, value):
         if index >= len(self) or -index > len(self):
             raise IndexError('series index out of range')
 

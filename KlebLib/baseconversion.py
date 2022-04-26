@@ -95,7 +95,7 @@ def convert_base(num:str, base:Union[int, str], ansBase:int) -> str:
     return ans
 
 
-def convert_dual_base_denary(num: str, outerBase: int, innerBase: int) -> str:
+def convert_dual_base_denary(num:str, outerBase:int, innerBase:int) -> str:
 	#Convert a number from a dual base to denary
 	innerSize = int(log(outerBase, innerBase))
 
@@ -122,16 +122,14 @@ def convert_dual_base_denary(num: str, outerBase: int, innerBase: int) -> str:
 	return decNum
 
 
-def convert_from_dual_base(num: str, outerBase: int, innerBase: int,
-                           ansBase: int) -> str:
+def convert_from_dual_base(num:str, outerBase:int, innerBase:int, ansBase:int) -> str:
 	#Convert a number from a dual base to any other base
 	decNum = convert_dual_base_denary(num, outerBase, innerBase)
 	ans = convert_base(str(decNum), 10, ansBase)
 	return ans
 
 
-def convert_to_dual_base(num: str, base: int, ansOuterBase: int,
-                         ansInnerBase: int) -> str:
+def convert_to_dual_base(num:str, base:int, ansOuterBase:int, ansInnerBase:int) -> str:
 	#Convert a number from any base to a dual base
 	innerSize = int(log(ansOuterBase, ansInnerBase))
 	ans = ''
@@ -148,7 +146,6 @@ def convert_to_dual_base(num: str, base: int, ansOuterBase: int,
 
 	return ans
 
-def convert_between_dual_bases(num: str, outerBase: str, innerBase: str,
-                               ansOuterBase: str, ansInnerBase: str) -> str:
+def convert_between_dual_bases(num:str, outerBase:int, innerBase:int, ansOuterBase:int, ansInnerBase:int) -> str:
 	temp = convert_from_dual_base(num, outerBase, innerBase, 64)
 	return convert_to_dual_base(temp, 64, ansOuterBase, ansInnerBase)
