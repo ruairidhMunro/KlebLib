@@ -1,14 +1,19 @@
-from . maths import baseconversion, fraction, polynomial, rounding, universaladdition
-from . structures import series, tree
-from . import test
+from .maths.baseconversion import *
+from .maths.fraction import *
+from .maths.polynomial import *
+from .maths.rounding import *
+from .maths.universaladdition import *
+from .structures.series import *
+from .structures.tree import *
+from .test import *
 
 __all__ = [
-    'baseconversion.convert_base',
-    'fraction.Fraction',
-    'polynomial.Polynomial',
-    'rounding.ceiling', 'rounding.smart_round',
-    'series.Series',
-    'test.Test',
-    'tree.Tree',
-    'universaladdition.uadd'
+    'convert_base',
+    'Fraction',
+    'Polynomial',
+    'ceiling', 'smart_round',
+    'Series',
+    'Test',
+    'Tree',
+    'uadd'
 ]

@@ -1,4 +1,5 @@
-from KlebLib import fraction, polynomial, baseconversion, universaladdition, series
+from .maths import baseconversion, fraction, polynomial, rounding, universaladdition
+from .structures import series, tree
 
 class Test:
     def __init__(self, testType:str, **kwargs):

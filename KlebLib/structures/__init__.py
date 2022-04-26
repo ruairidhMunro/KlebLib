@@ -1,6 +1,7 @@
-from . import series, tree
+from .series import *
+from .tree import *
 
 __all__ = [
-    'series.Series',
-    'tree.Tree'
+    'Series',
+    'Tree'
 ]

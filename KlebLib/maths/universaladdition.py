@@ -1,6 +1,6 @@
 from .baseconversion import convert_base
 
-__all__ = ['add']
+__all__ = ['uadd']
 
 def uadd(base:int, *nums:str) -> str:
     if type(base) is not int:

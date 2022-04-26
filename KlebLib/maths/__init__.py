@@ -1,9 +1,13 @@
-from . import baseconversion, fraction, polynomial, rounding, universaladdition 
+from .baseconversion import *
+from .fraction import *
+from .polynomial import *
+from .rounding import *
+from .universaladdition import *
 
 __all__ = [
-    'baseconversion.convert_base',
-    'fraction.Fraction',
-    'polynomial.Polynomial',
-    'rounding.ceiling', 'rounding.smart_round',
-    'universaladdition.uadd'
+    'convert_base',
+    'Fraction',
+    'Polynomial',
+    'ceiling', 'smart_round',
+    'uadd'
 ]
