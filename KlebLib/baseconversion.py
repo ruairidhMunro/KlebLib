@@ -5,7 +5,7 @@ __all__ = ['convert_base']
 
 POSS_DIGITS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#£&%;:€$¥_^§|~<>()[]{}.,!?"ςερτυθιοσδφγξλζψωβцгшщзфлджэячиьбюъ'
 
-def convert_denary(num: str, base: int) -> str:
+def convert_denary(num:str, base:int) -> str:
 	#Set up variables
 	decNum = 0
 	decNumArr = []
@@ -45,14 +45,15 @@ def convert_base(num:str, base:Union[int, str], ansBase:int) -> str:
         base = base.split('/')
         if '/' in ansBase:
             ansBase = ansBase.split('/')
-            return convert_between_dual_bases(num, base[0], base[1], ansBase[0], ansBase[1])
+            return convert_between_dual_bases(num, int(base[0]), int(base[1]), int(ansBase[0]), int(ansBase[1]))
         else:
-            return convert_from_dual_base(num, base[0], base[1], ansBase)
+            return convert_from_dual_base(num, int(base[0]), int(base[1]), ansBase)
     elif '/' in str(ansBase):
         ansBase = ansBase.split('/')
-        return convert_to_dual_base(num, base, ansBase[0], ansBase[1])
+        return convert_to_dual_base(num, base, int(ansBase[0]), int(ansBase[1]))
             
 	#Set up variables
+    base = int(base)
     decNum = convert_denary(num, base)
     usedDigits = []
     ansDigits = []
