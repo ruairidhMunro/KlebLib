@@ -1,6 +1,28 @@
-from KlebLib.baseconversion import *
+from KlebLib.baseconversion import convert_base
 
-def add(base:int, *nums:str) -> str:
+__all__ = ['add']
+
+def uadd(base:int, *nums:str) -> str:
+    if type(base) is not int:
+        if type(base) is float:
+            base = int(base)
+        else:
+            raise ValueError(f'Expected int, got {type(base).__name__}')
+
+    nums = list(nums)
+    if len(nums) < 2:
+        raise ValueError('tuple nums must be of length 2 or greater')
+
+    while len(nums) > 2:
+        nums[0] = uadd(base, nums[0], nums[1])
+        del nums[1]
+
+    return convert_base(
+        convert_base(nums[0], base, 10) + convert_base(nums[1], base, 10),
+        10, base
+    )
+
+def classic_add(base:int, *nums:str) -> str:
     #Check validity of input
     if type(base) is not int:
         if type(base) is float:
@@ -18,7 +40,7 @@ def add(base:int, *nums:str) -> str:
 	#Add the first 2 numbers, store the value as the first num and delete the second num
     while len(nums) > 2:
         #print('recursion activated') #debug
-        nums[0] = add(base, nums[0], nums[1])
+        nums[0] = classic_add(base, nums[0], nums[1])
         del nums[1]
   
     #print(f'{nums} passed while loop') #debug
@@ -49,8 +71,8 @@ def add(base:int, *nums:str) -> str:
     while len(num1) != len(num2):
         if len(num1) > len(num2):
             num2.append('0')
-    else:
-      num1.append('0')
+        else:
+            num1.append('0')
     
     #Convert nums to denary and add the numbers    
     for i, (num1digit, num2digit) in enumerate(zip(num1, num2)):

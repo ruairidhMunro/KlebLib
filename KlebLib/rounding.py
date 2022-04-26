@@ -48,7 +48,7 @@ def ceiling(num:float, decPlaces:int=0) -> float:
         
     return float(num)
     
-def smartRound(num:float, decPlaces:int=0) -> float:
+def smart_round(num:float, decPlaces:int=0) -> float:
     if str(num)[decPlaces + 1] >= 5:
         return ceiling(num, decPlaces)
     else:

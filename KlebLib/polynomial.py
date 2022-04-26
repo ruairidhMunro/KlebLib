@@ -1,5 +1,25 @@
 import re
 from typing import Union
+from copy import deepcopy
+
+__all__ = ['Polynomial']
+
+def get_variables(polynomial:Union[list, str]) -> list:
+    variables = set()
+
+    if type(polynomial) is str:
+        for character in polynomial:
+            #If it is a letter
+            if (ord(character) >= 65 and ord(character) <= 90) or (ord(character) >= 97 and ord(character) <= 122):
+                variables.add(character)
+
+    elif type(polynomial) is list:
+        for term in polynomial:
+            for variable in term:
+                if variable != 'num':
+                    variables.add(variable)
+
+    return list(variables)
 
 class Polynomial:
     def __init__(self, polynomial:Union[list, str]):
@@ -10,7 +30,7 @@ class Polynomial:
                     raise KeyError('Every term must contain key \'num\'')
             self.polynomial = polynomial
         else:
-            self.polynomial = self._parse(polynomial, self.get_variables(polynomial))
+            self.polynomial = self._parse(polynomial, get_variables(polynomial))
         #print(self.polynomial) #debug
 
     def _parse(self, polynomial:str, variables:list) -> list:
@@ -48,7 +68,7 @@ class Polynomial:
             else:
                 negativeMultiple = 1
                         
-            for variable in self.get_variables(term):
+            for variable in get_variables(term):
                 if f'{variable}^' in term:
                     currentTerm[variable] = self._trim_num(term, 'right')
                             
@@ -95,10 +115,10 @@ class Polynomial:
 
     def integrate(self, varToIntegrate:str=None):
         if varToIntegrate is None:
-            if len(self.get_variables(self.polynomial)) != 1:
+            if len(get_variables(self.polynomial)) != 1:
                 raise TypeError('cannot implicitly detect variable for polynomials of multiple variables')
             else:
-                varToIntegrate = self.get_variables(self.polynomial)[0]
+                varToIntegrate = get_variables(self.polynomial)[0]
                 
         outputPolynomial = []
         for term in self.polynomial:
@@ -151,9 +171,9 @@ class Polynomial:
 
     def __add__(self, other):
         #print(f'adding polynomials {self} and {other}') #debug
-        outputPolynomial = self.polynomial.deepcopy()
+        outputPolynomial = deepcopy(self.polynomial)
         
-        for i, term in enumerate(other.polynomial.copy()):
+        for i, term in enumerate(deepcopy(other.polynomial)):
             #print(f'adding term {term} to polynomial {outputPolynomial}') #debug
             location = self._locate(outputPolynomial.copy(), term.copy())
             if not type(location) is bool:
@@ -166,9 +186,9 @@ class Polynomial:
 
     def __sub__(self, other):
         #print(f'subtracting polynomial {other} from {self}') #debug
-        outputPolynomial = self.polynomial.deepcopy()
+        outputPolynomial = deepcopy(self.polynomial)
         
-        for i, term in enumerate(other.polynomial.copy()):
+        for i, term in enumerate(deepcopy(other.polynomial)):
             #print(f'subtracting term {term} from polynomial {outputPolynomial}') #debug
             location = self._locate(outputPolynomial.copy(), term.copy())
             if not type(location) is bool:
@@ -187,9 +207,9 @@ class Polynomial:
 
     def __iadd__(self, other):
         #print(f'adding polynomials {self} and {other}') #debug
-        outputPolynomial = self.polynomial.deepcpy()
+        outputPolynomial = deepcopy(self.polynomial)
         
-        for i, term in enumerate(other.polynomial.copy()):
+        for i, term in enumerate(deepcopy(other.polynomial)):
             #print(f'adding term {term} to polynomial {outputPolynomial}') #debug
             location = self._locate(outputPolynomial.copy(), term.copy())
             if not type(location) is bool:
@@ -203,9 +223,9 @@ class Polynomial:
 
     def __isub__(self, other):
         #print(f'subtracting polynomial {other} from {self}') #debug
-        outputPolynomial = self.polynomial.deepcopy()
+        outputPolynomial = deepcopy(self.polynomial)
         
-        for i, term in enumerate(other.polynomial.copy()):
+        for i, term in enumerate(deepcopy(other.polynomial)):
             #print(f'suntracting term {term} from polynomial {outputPolynomial}') #debug
             location = self._locate(outputPolynomial.copy(), term.copy())
             if not type(location) is bool:
@@ -313,23 +333,6 @@ class Polynomial:
         else:
             return int(num)
 
-    def get_variables(self, polynomial:Union[list, str]) -> list:
-        variables = set()
-
-        if type(polynomial) is str:
-            for character in polynomial:
-                #If it is a letter
-                if (ord(character) >= 65 and ord(character) <= 90) or (ord(character) >= 97 and ord(character) <= 122):
-                    variables.add(character)
-
-        elif type(polynomial) is list:
-            for term in polynomial:
-                for variable in term:
-                    if variable != 'num':
-                        variables.add(variable)
-
-        return list(variables)
-
     def _trim_num(self, string:str, side:str) -> float:
         #print(f'trimming {string}') #debug
         numPos = self._get_num_pos(string, side)
@@ -384,14 +387,6 @@ class Polynomial:
 
         for term in termsToRemove:
             del output[output.index(term)]
-
-        return output
-
-    def _copy(self, listToCopy:list) -> list:
-        output = []
-        
-        for item in listToCopy:
-            output.append(item.copy())
 
         return output
 
