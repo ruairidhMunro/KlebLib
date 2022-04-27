@@ -1,2 +1,1 @@
-from .series import *
-from .tree import *
+from . import series, tree
