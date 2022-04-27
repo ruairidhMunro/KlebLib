@@ -1,4 +1,5 @@
 from typing import Any
+from copy import deepcopy
 
 class Series:
     def __init__(self, item:Any, selfType:type=None, subType:type=None):
@@ -112,7 +113,7 @@ class Series:
         return self[self.iterIndex]
 
     def __add__(self, other):
-        result = self.deepcopy()
+        result = deepcopy(self)
 
         if type(other) is self.type:
             if result.subType is not None and type(other) is not result.subType:
@@ -184,7 +185,7 @@ class Series:
         return output
 
     def __repr__(self):
-        output = 'series.Series(['
+        output = 'KlebLib.structures.series.Series(['
         for i, item in enumerate(self):
             output += repr(item)
             
@@ -192,13 +193,13 @@ class Series:
                 output += ', '
 
         if self.type is Series:
-            output += f'], series.Series'
+            output += f'], KlebLib.structures.series.Series'
         else:
             output += f'], {self.type.__name__}'
             
         if self.subType is not None:
             if self.subType is Series:
-                output += ', series.Series'
+                output += ', KlebLib.structures.series.Series'
             else:
                 output += f', {self.subType.__name__}'
 
@@ -221,9 +222,12 @@ class Series:
 
         return output
 
-    def deepcopy(self):
+    def __copy__(self):
+        return self.copy()
+
+    def __deepcopy__(self, memo=None):
         try:
-            output = Series(self[0].deepcopy(), self.type, self.subType)
+            output = Series(deepcopy(self[0]), self.type, self.subType)
             
         except AttributeError:
             output = Series(self[0], self.type, self.subType)

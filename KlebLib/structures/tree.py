@@ -94,3 +94,6 @@ class Tree:
 
         else:
             raise KeyError(str(index))
+
+    def __dict__(self):
+        pass
