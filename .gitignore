@@ -131,3 +131,6 @@ dmypy.json
 # Replit stuff
 main.py
 pyproject.toml
+
+# Testing stuff
+testvalues.py
