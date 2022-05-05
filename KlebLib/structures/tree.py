@@ -1,4 +1,7 @@
 from typing import Any
+from copy import deepcopy
+
+__all__ = ['Tree']
 
 class Tree:
     def __new__(cls, item, l=None, r=None, *args, **kwargs):
@@ -14,6 +17,9 @@ class Tree:
             self.value = list(item.keys())[0]
             #print(f'self value is {self.value}') #debug
             sub = list(item.values())[0]
+            if sub == {None: None}:
+                sub = None
+            #print(f'sub is {sub}') #debug
             
             if sub is None:
                 self.l = None
@@ -39,8 +45,11 @@ class Tree:
             self.l = Tree(l)
             self.r = Tree(r)
 
+    def __str__(self):
+        return str(self.asdict())
+
     def __repr__(self):
-        return self.value
+        return f'KlebLib.structures.tree.Tree({self.asdict()})'
 
     def max_depth(self):
         if self.l is not None:
@@ -79,6 +88,11 @@ class Tree:
             return self.value
             
         elif type(index) is str:
+            if index[0] == '\\':
+                branch = True
+            else:
+                branch = False
+
             current = self
             for direction in index:
                 #print(f'current is {self}') #debug
@@ -89,11 +103,52 @@ class Tree:
     
                 if current is None:
                     raise IndexError('tree index out of depth')
-    
-            return current.value
+
+            if branch:
+                return current
+            else:
+                return current.value
 
         else:
             raise KeyError(str(index))
 
-    def __dict__(self):
-        pass
+    def asdict(self):
+        #print(f'creating dict from tree item {self.value}') #debug
+        left = self.l.asdict() if self.l else {None: None}
+        #print(f'left is {left}') #debug
+        right = self.r.asdict() if self.r else {None: None}
+        #print(f'right is {right}') #debug
+
+        #print('returning {}'.format({self.value: {**left, **right}})) #debug
+        return {self.value: {**left, **right}}
+
+    def values(self):
+        return get_values(self.asdict())
+
+    def __iter__(self):
+        for item in self.values():
+            yield item
+
+    def __contains__(self, item):
+        return item in self.values()
+
+    def copy(self):
+        return Tree(self.asdict())
+
+    def __copy__(self):
+        return self.copy()
+
+    def __deepcopy__(self, memo=None):
+        return Tree(deepcopy(self.asdict()))
+
+def get_values(inputDict):
+    values = []
+    
+    for item, links in inputDict.items():
+        values.append(item)
+        if links is not None:
+            values += get_values(links)
+
+    while None in values:
+        values.remove(None)
+    return values

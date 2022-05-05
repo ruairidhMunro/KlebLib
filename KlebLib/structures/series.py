@@ -2,14 +2,14 @@ from typing import Any
 from copy import deepcopy
 
 class Series:
-    def __init__(self, item:Any, selfType:type=None, subType:type=None):
+    def __init__(self, item:Any, seriesType:type=None, subType:type=None):
         #print(f'creating series from item {item}') #debug
         skip = False
 
-        if type(item) is selfType:
+        if type(item) is seriesType:
             #print('using given type') #debug
             self.value = item
-            self.type = selfType
+            self.type = seriesType
             self.next = None
             skip = True
             
@@ -18,16 +18,16 @@ class Series:
             item = list(item)
             
         elif type(item) is not list:
-            if selfType and type(item) is not selfType:
-                raise TypeError(f'type of given item {item} is not the same as given type {selfType}')
+            if seriesType and type(item) is not selfType:
+                raise TypeError(f'type of given item {item} is not the same as given type {seriesType}')
                 
             self.value = item
             self.type = type(item)
             self.next = None
             
         if (type(item) is list) and (not skip):
-            if selfType and type(item[0]) is not selfType:
-                raise TypeError(f'type of given item {item[0]} is not the same as given type {selfType}')
+            if seriesType and type(item[0]) is not seriesType:
+                raise TypeError(f'type of given item {item[0]} is not the same as given type {seriesType}')
                 
             for subItem in item:
                 if type(subItem) is not type(item[0]):
@@ -41,7 +41,7 @@ class Series:
                 self.next = None
 
         if subType is not None:
-            if selfType is not Series:
+            if seriesType is not Series:
                 raise TypeError('series type must be series if subtype is given')
 
             self.subType = subType
