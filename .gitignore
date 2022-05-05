@@ -129,8 +129,9 @@ dmypy.json
 .pyre/
 
 # Replit stuff
-main.py
+replit.nix
 pyproject.toml
 
 # Testing stuff
+main.py
 testvalues.py
