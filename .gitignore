@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 
 # Replit stuff
-replit.nix
+.replit
 pyproject.toml
 
 # Testing stuff
