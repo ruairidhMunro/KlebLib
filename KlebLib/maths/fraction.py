@@ -1,8 +1,7 @@
 import re
-from typing import Union
 
 class Fraction:
-    def __init__(self, fraction:Union[list, str, int, float]):
+    def __init__(self, fraction:list|str|int|float):
         self.skipSimplify = True
         
         if type(fraction) is list:
@@ -79,14 +78,6 @@ class Fraction:
     def _simplify_nums(nums):
         return Fraction(nums, True).nums
 
-    #Automatically simplify fractions
-    def autosimplify(func):
-        def inner(*args, **kwargs):
-            fraction = func(*args, **kwargs)
-            fraction.simplify
-            return fraction
-        return inner
-
     #Output the numbers as a fraction
     def __str__(self) -> str:
         return (f'{self.num}/{self.dem}')
@@ -106,21 +97,20 @@ class Fraction:
     def __eq__(self, other):
         return self.num == other.num and self.dem == other.dem
 
-    #Compares this fraction to another and inverts
     def __ne__(self, other):
-        return not self.__eq__(other)
+        return not self == other
 
     def __gt__(self, other):
         return float(self) > float(other)
 
     def __ge__(self, other):
-        return float(self) >= float(other)
+        return not self < other
 
     def __lt__(self, other):
         return float(self) < float(other)
 
     def __le__(self, other):
-        return float(self) <= float(other)
+        return not self > other
 
     #Adds two given fractions
     def _add(self, fraction1, fraction2):
@@ -193,28 +183,40 @@ class Fraction:
     #Adds another fraction to this one and returns a new fraction
     def __radd__(self, number):
         #print(f'adding self to {number}') #debug
-        other = self._num_to_fraction(number)
+        try:
+            other = self._num_to_fraction(number)
+        except TypeError:
+            return NotImplemented
             
         return self._add(other, self)
 
     #Subtracts another fraction from this one and returns a new fraction
     def __rsub__(self, number):
         #print(subtracting self from {number}') #debug
-        other = self._num_to_fraction(number)
+        try:
+            other = self._num_to_fraction(number)
+        except TypeError:
+            return NotImplemented
             
         return self._sub(other, self)
 
     #Multiplies another fraction by this one and returns a new fraction
     def __rmul__(self, number):
         #print(multiplying {number} by self') #debug
-        other = self._num_to_fraction(number)
+        try:
+            other = self._num_to_fraction(number)
+        except TypeError:
+            return NotImplemented
         
         return self._mul(other, self)
 
     #Divides this fraction by another one and returns a new fraction
     def __rtruediv__(self, number):
         #print(dividing {number} by self') #debug
-        other = self._num_to_fraction(number)
+        try:
+            other = self._num_to_fraction(number)
+        except TypeError:
+            return NotImplemented
         
         return self._truediv(other, self)
 
@@ -224,7 +226,7 @@ class Fraction:
             try:
                 other = self._num_to_fraction(other)
             except TypeError:
-                raise TypeError(f'Cannot add type {type(other)} to fraction')
+                return NotImplemented
                 
         answer = self._add(self, other)
         
@@ -238,7 +240,7 @@ class Fraction:
             try:
                 other = self._num_to_fraction(other)
             except TypeError:
-                raise TypeError(f'Cannot add type {type(other)} to fraction')
+                return NotImplemented
                 
         answer = self._sub(self, other)
         
@@ -252,7 +254,7 @@ class Fraction:
             try:
                 other = self._num_to_fraction(other)
             except TypeError:
-                raise TypeError(f'Cannot add type {type(other)} to fraction')
+                return NotImplemented
                 
         answer = self._mul(self, other)
         
@@ -266,7 +268,7 @@ class Fraction:
             try:
                 other = self._num_to_fraction(other)
             except TypeError:
-                raise TypeError(f'Cannot add type {type(other)} to fraction')
+                return NotImplemented
                 
         answer = self._truediv(self, other)
         
@@ -278,18 +280,19 @@ class Fraction:
     def __neg__(self):
         return Fraction([-self.num, self.dem])
 
-    #Updates this fraction to its reciprocal
+    #Returns the reciprocal of this fraction
     def invert(self):
         return Fraction([self.dem, self.num])
 
     #Returns either the numerator or denominator, as if the fraction were a list in form [num, dem]
     def __getitem__(self, index):
-        if index == 0:
-            return self.num
-        elif index == 1:
-            return self.dem
-        else:
-            raise IndexError(f'Invalid value for index: {index}. Must be 0 or 1')
+        match index:
+            case 0:
+                return self.num
+            case 1:
+                return self.dem
+            case _:
+                raise IndexError(f'Invalid value for index: {index}. Must be 0 or 1')
     
     #Returns a mixed fraction
     @property
@@ -306,7 +309,7 @@ class Fraction:
 
     #Sets the fraction to the top-heavy form of a given mixed fraction
     @mixed.setter
-    def mixed(self, fraction:Union[str, list]):
+    def mixed(self, fraction):
         #Fraction given in form [integerPart, [num, dem]] or 'integerPart num/dem'
         if type(fraction) is str:
             fraction = fraction.split(' ')
@@ -324,7 +327,7 @@ class Fraction:
 
     #Updates the fraction through the use of nums
     @nums.setter
-    def nums(self, numsList:list):
+    def nums(self, numsList):
         self.num = numsList[0]
         self.dem = numsList[1]
 

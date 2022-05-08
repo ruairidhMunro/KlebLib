@@ -1,10 +1,9 @@
 import re
-from typing import Union
 from copy import deepcopy
 
 __all__ = ['Polynomial']
 
-def get_variables(polynomial:Union[list, str]) -> list:
+def get_variables(polynomial:list|str) -> list:
     variables = set()
 
     if type(polynomial) is str:
@@ -22,7 +21,7 @@ def get_variables(polynomial:Union[list, str]) -> list:
     return list(variables)
 
 class Polynomial:
-    def __init__(self, polynomial:Union[list, str]):
+    def __init__(self, polynomial:list|str):
         #print(f'the polynomials are {polynomial} and are of type {type(polynomial).__name__}') #debug
         if type(polynomial) is list:
             for term in polynomial:
@@ -344,7 +343,7 @@ class Polynomial:
             #print(f'num not found') #debug
             return 0.0
 
-    def _get_num_pos(self, string:str, side:str) -> Union[list, None]:
+    def _get_num_pos(self, string:str, side:str) -> list|NoneType:
         if side == 'left':
             numPos = re.search(r'^-?\d+\.?\d*', string)
         else:
@@ -355,7 +354,7 @@ class Polynomial:
         else:
             return None
 
-    def _locate(self, polynomial:list, searchTerm:dict) -> Union[int, bool]:
+    def _locate(self, polynomial:list, searchTerm:dict) -> int|bool:
         #print(f'locating term {searchTerm} in polynomial {polynomial}') #debug
         del searchTerm['num']
         for i, term in enumerate(polynomial):

@@ -1,5 +1,4 @@
 from math import log
-from typing import Union
 
 __all__ = ['convert_base']
 
@@ -37,7 +36,7 @@ def convert_denary(num:str, base:int) -> str:
 	return decNum
 
 
-def convert_base(num:str, base:Union[int, str], ansBase:int) -> str:
+def convert_base(num:str, base:int|str, ansBase:int) -> str:
     num = str(num)
     
     #Use correct conversion function
