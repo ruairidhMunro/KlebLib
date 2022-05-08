@@ -1,7 +1,7 @@
 import re
 
 class Fraction:
-    def __init__(self, fraction:list|str|int|float):
+    def __init__(self, fraction:int|float|str|list):
         self.skipSimplify = True
         
         if type(fraction) is list:
