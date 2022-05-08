@@ -12,7 +12,7 @@ class Polynomial:
                     raise KeyError('Every term must contain key \'num\'')
             self.polynomial = polynomial
         else:
-            self.polynomial = self._parse(polynomial, get_variables(polynomial))
+            self.polynomial = self._parse(polynomial, Polynomial.get_variables(polynomial))
         #print(self.polynomial) #debug
 
     def _parse(self, polynomial:str, variables:list) -> list:
@@ -50,7 +50,7 @@ class Polynomial:
             else:
                 negativeMultiple = 1
                         
-            for variable in get_variables(term):
+            for variable in Polynomial.get_variables(term):
                 if f'{variable}^' in term:
                     currentTerm[variable] = self._trim_num(term, 'right')
                             
@@ -100,7 +100,7 @@ class Polynomial:
             if len(Polynomial.get_variables(self.polynomial)) != 1:
                 raise TypeError('cannot implicitly detect variable for polynomials of multiple variables')
             else:
-                varToIntegrate = get_variables(self.polynomial)[0]
+                varToIntegrate = Polynomial.get_variables(self.polynomial)[0]
                 
         outputPolynomial = []
         for term in self.polynomial:
@@ -329,7 +329,7 @@ class Polynomial:
             return 0.0
 
     @staticmethod
-    def get_num_pos(string:str, side:str) -> list|NoneType:
+    def get_num_pos(string:str, side:str) -> list:
         if side == 'left':
             numPos = re.search(r'^-?\d+\.?\d*', string)
         else:
@@ -341,7 +341,7 @@ class Polynomial:
             return None
 
     @staticmethod
-    def locate(polynomial:list, searchTerm:dict) -> int|NoneType:
+    def locate(polynomial:list, searchTerm:dict) -> int:
         #print(f'locating term {searchTerm} in polynomial {polynomial}') #debug
         del searchTerm['num']
         for i, term in enumerate(polynomial):
