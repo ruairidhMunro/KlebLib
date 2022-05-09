@@ -133,7 +133,7 @@ dmypy.json
 pyproject.toml
 
 # VSCode stuff
-launch.json
+.vscode
 
 # Testing stuff
 main.py
