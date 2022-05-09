@@ -132,6 +132,9 @@ dmypy.json
 .replit
 pyproject.toml
 
+# VSCode stuff
+launch.json
+
 # Testing stuff
 main.py
 testvalues.py
