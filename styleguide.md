@@ -20,9 +20,9 @@
 
    Names of variables that will not change should be written in SCREAMING_SNAKE_CASE.
 
-  ### Functions
+  ### Functions and Methods
 
-   Names of functions should be written in snake_case. 
+   Names of functions and methods should be written in snake_case. 
 
   ### Classes
 
@@ -43,10 +43,23 @@
   * Imports
   * Global constants
   * Classes
-    * `__new__`
-    * `__init__`
-    * Comparison operators
-    * Binary arithmetic operators
-    * Unary arithmetic operators
+    * `__new__` and `__init__`
+    * Comparison operator overloads
+    * Binary arithmetic operator overloads
+    * Unary arithmetic operator overloads
     * `__repr__`
     * Type conversion methods, in the order laid out in [Unions](#user-content-unions)
+    * `__iter__` and `__next__`
+    * `__getitem__` and `__setitem__`
+    * `__getattr__`, `__getattribute__`, `__setattr__`
+    * Copy methods
+    * Internal methods
+    * Public methods
+    * Static methods
+    * Class methods     
+  * Internal functions
+  * Exported functions
+    
+ ## Docstrings
+
+  All modules should have docstrings, along with exported classes and functions, and public methods, as outlined in [PEP 257](https://peps.python.org/pep-0257/)
