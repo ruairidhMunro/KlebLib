@@ -5,7 +5,7 @@ from math import log
 
 __all__ = ['convert_base', 'detect_base']
 
-POSS_DIGITS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#£&%;:€$¥_^§|~<>()[]{}.,!?"ςερτυθιοσδφγξλζψωβцгшщзфлджэячиьбюъ'
+POSS_DIGITS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#£&%;:€$¥_^§|~<>()[]{}.,!?"ςερτυθιοσδφγξλζψωβцгшщзфлджэячиьбюъ啊呀哈这两大亮点在于它很可爱了吧啦一天不发出来看我想笑就好'
 
 def convert_dual_base_denary(num:str, outerBase:int, innerBase:int) -> str:
 	#Convert a number from a dual base to denary
@@ -57,8 +57,8 @@ def convert_to_dual_base(num:str, base:int, ansOuterBase:int, ansInnerBase:int) 
 	return ans
 
 def convert_between_dual_bases(num:str, outerBase:int, innerBase:int, ansOuterBase:int, ansInnerBase:int) -> str:
-	temp = convert_from_dual_base(num, outerBase, innerBase, 64)
-	return convert_to_dual_base(temp, 64, ansOuterBase, ansInnerBase)
+	temp = convert_from_dual_base(num, outerBase, innerBase, 128)
+	return convert_to_dual_base(temp, 128, ansOuterBase, ansInnerBase)
 
 def convert_denary(num:str, base:int) -> str:
 	#Set up variables
