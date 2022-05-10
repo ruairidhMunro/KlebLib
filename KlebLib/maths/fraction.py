@@ -1,8 +1,26 @@
-"""Fraction -- a class to accurately store fractions"""
+"""Fraction -- accurately store and manipulate fractions"""
 import re
 
 class Fraction:
+    """Store a fraction as a numerator and denominator.
+
+    Methods:
+    mixed() -- returns a mixed fraction in its simplest form.
+
+    Attributes:
+    num -- the numerator of the fraction.
+    dem -- the denominator of the fraction.
+    nums -- a list of the numerator and denominator in the form [num, dem]
+    """
     def __init__(self, fraction:int|float|str|list):
+        """Create a fraction. 
+
+        Arguments:
+        fraction -- value of the fraction. valid formats: 
+            a number as an int, float, or string
+            a string in the form 'num/dem'
+            a list in the form [num, dem]
+        """
         self.skipSimplify = True
         
         if type(fraction) is list:
@@ -10,10 +28,13 @@ class Fraction:
             self.dem = fraction[1]
             
         elif type(fraction) is str:
-            fractionNums = fraction.split('/')
-            fractionNums = [int(i) for i in fractionNums]
-            self.num = fractionNums[0]
-            self.dem = fractionNums[1]
+            if '/' in fraction:
+                fractionNums = fraction.split('/')
+                fractionNums = [int(i) for i in fractionNums]
+                self.num = fractionNums[0]
+                self.dem = fractionNums[1]
+            else:
+                self.nums = Fraction.num_to_fraction(fraction).nums
 
         elif type(fraction) is int or type(fraction) is float:
             fractionNums = self._num_to_fraction(fraction)
@@ -273,8 +294,8 @@ class Fraction:
         self.dem = dem
 
     #Returns a mixed fraction
-    @property
     def mixed(self):
+        """Returns a mixed fraction in its simplest form."""
         integerPart = 0
         num = self.num
         dem = self.dem
@@ -283,20 +304,7 @@ class Fraction:
             num -= dem
             integerPart += 1
 
-        return [integerPart, [num, dem]]
-
-    #Sets the fraction to the top-heavy form of a given mixed fraction
-    @mixed.setter
-    def mixed(self, fraction):
-        #Fraction given in form [integerPart, [num, dem]] or 'integerPart num/dem'
-        if type(fraction) is str:
-            fraction = fraction.split(' ')
-            temp = [int(i) for i in fraction[1].split('/')]
-            fraction = [int(fraction[0]), temp]
-            
-        fraction[1][0] += fraction[0] * fraction[1][1]
-        self.num = fraction[1][0]
-        self.dem = fraction[1][1]
+        return f'{integerPart} {num}/{dem}'
 
     #Returns a list of the numerator and denominator
     @property
@@ -313,7 +321,7 @@ class Fraction:
 
     #Adds two given fractions
     @staticmethod
-    def add(self, fraction1, fraction2):
+    def add(fraction1, fraction2):
         num = (fraction1.num * fraction2.dem) + (fraction1.dem * fraction2.num)
         dem = fraction1.dem * fraction2.dem
 
@@ -321,7 +329,7 @@ class Fraction:
 
     #Subtracts two given fractions
     @staticmethod
-    def sub(self, fraction1, fraction2):
+    def sub(fraction1, fraction2):
         num = (fraction1.num * fraction2.dem) - (fraction1.dem * fraction2.num)
         dem = fraction1.dem * fraction2.dem
 
@@ -329,7 +337,7 @@ class Fraction:
 
     #Multiplies two given fractions
     @staticmethod
-    def mul(self, fraction1, fraction2):
+    def mul(fraction1, fraction2):
         num = fraction1.num * fraction2.num
         dem = fraction1.dem * fraction2.dem
 
@@ -337,14 +345,14 @@ class Fraction:
 
     #Divides two given fractions
     @staticmethod
-    def truediv(self, fraction1, fraction2):
+    def truediv(fraction1, fraction2):
         num = fraction1.num * fraction2.dem
         dem = fraction1.dem * fraction2.num
 
         return Fraction([num, dem])
 
     @staticmethod
-    def num_to_fraction(self, number):
+    def num_to_fraction(number):
         if round(number, 0) == number:
             return Fraction([number, 1])
         else:

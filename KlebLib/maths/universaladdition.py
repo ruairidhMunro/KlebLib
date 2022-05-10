@@ -1,13 +1,23 @@
+"""uadd -- adds several numbers in a specified base
+classic_add -- adds several numbers in a specified base (deprecated)
+"""
 from .baseconversion import convert_base
+from warnings import warn
 
-__all__ = ['uadd']
+__all__ = ['uadd', 'classic_add']
 
-def uadd(base:int, *nums:str) -> str:
-    if type(base) is not int:
+def uadd(base:int|str, *nums:str) -> str:
+    """Add several numbers together in a given base.
+
+    Arguments:
+    base -- the base of the numbers
+    nums -- the numbers to be added
+    """
+    if type(base) is not int and type(base) is not str:
         if type(base) is float:
             base = int(base)
         else:
-            raise ValueError(f'Expected int, got {type(base).__name__}')
+            raise ValueError(f'Expected int or str, got {type(base).__name__}')
 
     nums = list(nums)
     if len(nums) < 2:
@@ -18,11 +28,19 @@ def uadd(base:int, *nums:str) -> str:
         del nums[1]
 
     return convert_base(
-        convert_base(nums[0], base, 10) + convert_base(nums[1], base, 10),
+        float(convert_base(nums[0], base, 10)) + float(convert_base(nums[1], base, 10)),
         10, base
     )
 
 def classic_add(base:int, *nums:str) -> str:
+    """Add several numbers together in a given base. Deprecated, do not use. 
+
+    Arguments:
+    base -- the base of the numbers
+    nums -- the numbers to be added
+    """
+    warn('classic_add is deprecated. use uadd instead', DeprecationWarning)
+
     #Check validity of input
     if type(base) is not int:
         if type(base) is float:
@@ -58,11 +76,8 @@ def classic_add(base:int, *nums:str) -> str:
     num2arr = []
   
     #Turn the strings into lists
-    for (num1digit, num2digit) in zip(num1, num2):
-        num1arr.append(num1digit)
-        num2arr.append(num2digit)
-    num1 = num1arr
-    num2 = num2arr
+    num1 = [i for i in num1]
+    num2 = [i for i in num2]
   
     #Reverse the arrays and equalise the lengths
     num1.reverse()
@@ -83,15 +98,15 @@ def classic_add(base:int, *nums:str) -> str:
 		
         result = num1digit + num2digit + carry
         if result >= carry:
-        	carry = result // base
-        	result = int(result % base)
+            carry = result // base
+            result = int(result % base)
         answer.append(result)
         #print(f'result: {result}') #debug
         #print(f'carry: {carry}') #debug
     
     #Handle overflow
     if carry > 0:
-    	answer.append(carry)
+        answer.append(carry)
     
     #Reverse answer to be in the correct order
     #print(f'reverse list answer: {answer}') #debug
@@ -110,6 +125,6 @@ def classic_add(base:int, *nums:str) -> str:
 	
     #Combine digits into one string
     for i in convertedAns:
-    	finalAns += str(i)
+        finalAns += str(i)
     
     return finalAns

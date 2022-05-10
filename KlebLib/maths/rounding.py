@@ -1,4 +1,13 @@
+"""ceiling -- round a number up to a specified number of decimal places
+round -- round a number to the closest value at the specified number of decimal places
+"""
 def ceiling(num:float, decPlaces:int=0) -> float:
+    """Rounds up.
+    
+    Arguments:
+    num -- the number to be rounded
+    decPlaces -- the number of decimal places to round to (default 0)
+    """
     #Check validity of input
     if not isinstance(num, int) and not isinstance(num, float):
         raise ValueError(f'Expected int or float, got {type(num).__name__}')
@@ -48,8 +57,14 @@ def ceiling(num:float, decPlaces:int=0) -> float:
         
     return float(num)
     
-def smart_round(num:float, decPlaces:int=0) -> float:
-    if str(num)[decPlaces + 1] >= 5:
+def round(num:float, decPlaces:int=0) -> float:
+    """Rounds to the closest number.
+    
+    Arguments:
+    num -- the number to be rounded
+    decPlaces -- the number of decimal places to round to (default 0)
+    """
+    if int(str(num)[decPlaces + 1]) >= 5:
         return ceiling(num, decPlaces)
     else:
         return round(num, decPlaces)

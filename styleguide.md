@@ -40,6 +40,7 @@
 
   Code should be ordered as follows:
 
+  * Docstring
   * Imports
   * Global constants
   * Classes
@@ -49,8 +50,10 @@
     * Unary arithmetic operator overloads
     * `__repr__`
     * Type conversion methods, in the order laid out in [Unions](#user-content-unions)
+    * `__len__`
+    * `__contains__`
     * `__iter__` and `__next__`
-    * `__getitem__` and `__setitem__`
+    * `__getitem__` , `__setitem__`, `__delitem__`
     * `__getattr__`, `__getattribute__`, `__setattr__`
     * Copy methods
     * Internal methods
@@ -62,4 +65,4 @@
     
  ## Docstrings
 
-  All modules should have docstrings, along with exported classes and functions, and public methods, as outlined in [PEP 257](https://peps.python.org/pep-0257/)
+  All modules should have docstrings, as should exported classes and functions, and public methods, as outlined in [PEP 257](https://peps.python.org/pep-0257/)

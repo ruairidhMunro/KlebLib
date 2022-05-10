@@ -1,9 +1,18 @@
+"""Polynomial -- store and manipulate polynomials"""
+
 import re
 from copy import deepcopy
 
 __all__ = ['Polynomial']
 
 class Polynomial:
+    """Store a polynomial as a list of terms.
+
+    Methods:
+    differentiate(varToDiff) -- differentiates the polynomial with respect to varToDiff. if no variable is supplied, and the polynomial only has a single variable, that will be used instead
+    integrate(varToIntegrate) -- integrates the polynomial with respect to varToIntegrate if no variable is supplied, and the polynomial only has a single variable, that will be used instead
+    integrate_definite(varToIntegrate)
+    """
     def __init__(self, polynomial:str|list):
         #print(f'the polynomials are {polynomial} and are of type {type(polynomial).__name__}') #debug
         if type(polynomial) is list:
@@ -15,7 +24,7 @@ class Polynomial:
             self.polynomial = self._parse(polynomial, Polynomial.get_variables(polynomial))
         #print(self.polynomial) #debug
 
-    def _parse(self, polynomial:str, variables:list) -> list:
+    def _parse(self, polynomial:str) -> list:
         #parse the polynomial into a list of dictionaries
         
         #print(f'parsing polynomial {polynomial}') #debug

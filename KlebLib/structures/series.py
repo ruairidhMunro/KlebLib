@@ -1,8 +1,24 @@
+"""Series -- a strictly-typed, linear data structure"""
 from typing import Any
 from copy import deepcopy
 
+__all__ = ['Series']
+
 class Series:
+    """A strictly-typed, linear data structure of variable length. 
+
+    Methods:
+    insert(index, value) -- sets the given index to the given value, incrementing the index of the item already at that index, and all items after it, by 1
+    copy() -- returns a copy of the series, keeping all references to mutable objects
+    """
     def __init__(self, item:Any, seriesType:type=None, subType:type=None):
+        """Create a series.
+        
+        Arguments:
+        item -- the item to be turned into a series. values of iterables will be extracted, unless seriesType is specified as that iterable
+        seriesType -- the type of the items within the series (defaults to the type of 'item')
+        subType -- the type of the series within this series (default None)
+        """
         #print(f'creating series from item {item}') #debug
         skip = False
 
@@ -18,7 +34,7 @@ class Series:
             item = list(item)
             
         elif type(item) is not list:
-            if seriesType and type(item) is not selfType:
+            if seriesType and type(item) is not seriesType:
                 raise TypeError(f'type of given item {item} is not the same as given type {seriesType}')
                 
             self.value = item
@@ -51,75 +67,15 @@ class Series:
         else:
             self.subType = None
 
-    def __len__(self):
-        if self.value is not None:
-            length = 1
-            current = self
-            while current.next is not None:
-                length += 1
-                current = current.next
-
-            return length
-            
-        else:
-            return 0
-
-    @property
-    def objects(self):
-        #print(f'getting objects of series with head {self.value}') #debug
-        result = [self]
-        current = self
-        while current.next is not None:
-            #print(f'value of current object is {current.value}') #debug
-            current = current.next
-            result.append(current)
-
-        #print('got objects') #debug
-        return result
-
-    def __getitem__(self, index:int):
-        if index >= len(self) or -index > len(self):
-            raise IndexError('series index out of range')
-
-        return self.objects[index].value
-
-    def __setitem__(self, index, value):
-        if index >= len(self) or -index > len(self):
-            raise IndexError('series index out of range')
-
-        self.objects[index].value = value
-
-    def __delitem__(self, index):
-        if index >= len(self) or -index > len(self):
-            raise IndexError('series index out of range')
-            
-        self.objects[index-1].next = self.objects[index+1]
-
-    def insert(self, index, value):
-        temp = self.objects[index]
-        self.objects[index-1].next = Series(value)
-        self.objects[index].next = temp
-        del temp
-
-    def __iter__(self):
-        self.iterIndex = -1
-        return self
-
-    def __next__(self):
-        self.iterIndex += 1
-        if self.iterIndex >= len(self):
-            raise StopIteration
-            
-        return self[self.iterIndex]
-
     def __add__(self, other):
         result = deepcopy(self)
 
-        if type(other) is self.type:
+        if type(other) is self.type or Series.valid_conversion(other, self.type):
+            other = self.type(other)
             if result.subType is not None and type(other) is not result.subType:
                 raise TypeError(f'series of type {other.type} cannot be appended to series of subtype {self.subType}')
                 
-            result.objects[-1].next = Series(other, type(other))
+            result.objects()[-1].next = Series(other, type(other))
             return result
 
         elif type(other) is list or type(other) is tuple or type(other) is set:
@@ -129,7 +85,7 @@ class Series:
             if self.type != other.type:
                 raise TypeError(f'cannot add series of type {other.type} to series of type {self.type}')
 
-            result.objects[-1].next = other
+            result.objects()[-1].next = other
             
         else:
             raise TypeError(f'cannot add object of type {type(other)} to series of type {self.type}')
@@ -146,7 +102,7 @@ class Series:
             if output.type != self.type:
                 raise TypeError(f'cannot add series of type {self.type} to container containing type {other.type}')
 
-            output.objects[-1].next = self.deepcopy()
+            output.objects()[-1].next = self.deepcopy()
             
         else:
             raise IndexError(f'cannot add series of type {self.type} to object of type {type(other)}')
@@ -154,8 +110,9 @@ class Series:
         return output
 
     def __iadd__(self, other):
-        if type(other) is self.type:
-            self.objects[-1].next = Series(other, type(other))
+        if type(other) is self.type or Series.valid_conversion(other, self.type):
+            other = self.type(other)
+            self.objects()[-1].next = Series(other, type(other))
             return self
         
         elif type(other) is list or type(other) is tuple or type(other) is set:
@@ -165,24 +122,12 @@ class Series:
             if self.type != other.type:
                 raise TypeError(f'cannot add series of type {other.type.__name__} to series of type {self.type.__name__}')
 
-            self.objects[-1].next = other
+            self.objects()[-1].next = other
             
         else:
             raise TypeError(f'cannot add object of type {type(other).__name__} to series of type {self.type.__name__}')
 
         return self
-
-    def __str__(self):
-        #print(f'coverting series with head value {self.value} to str') #debug
-        output = '<'
-        for i, item in enumerate(self):
-            output += str(item)
-            
-            if i != len(self) - 1:
-                output += ', '
-
-        output += '>'
-        return output
 
     def __repr__(self):
         output = 'KlebLib.structures.series.Series(['
@@ -207,11 +152,86 @@ class Series:
 
         return output
 
+    def __str__(self):
+        #print(f'coverting series with head value {self.value} to str') #debug
+        output = '<'
+        for i, item in enumerate(self):
+            output += str(item)
+            
+            if i != len(self) - 1:
+                output += ', '
+
+        output += '>'
+        return output
+
     def __list__(self):
         return [item for item in self]
 
+    def __tuple__(self):
+        return tuple(list(self))
+
     def __set__(self):
         return set(list(self))
+
+    def __len__(self):
+        if self.value is not None:
+            length = 1
+            current = self
+            while current.next is not None:
+                length += 1
+                current = current.next
+
+            return length
+            
+        else:
+            return 0
+
+    def __iter__(self):
+        self.iterIndex = -1
+        return self
+
+    def __next__(self):
+        self.iterIndex += 1
+        if self.iterIndex >= len(self):
+            raise StopIteration
+            
+        return self[self.iterIndex]
+
+    def __getitem__(self, index:int):
+        if index >= len(self) or -index > len(self):
+            raise IndexError('series index out of range')
+
+        return self.objects()[index].value
+
+    def __setitem__(self, index, value):
+        if index >= len(self) or -index > len(self):
+            raise IndexError('series index out of range')
+
+        self.objects()[index].value = value
+
+    def __delitem__(self, index):
+        if index >= len(self) or -index > len(self):
+            raise IndexError('series index out of range')
+            
+        self.objects()[index-1].next = self.objects()[index+1]
+
+    def objects(self):
+        #print(f'getting objects of series with head {self.value}') #debug
+        result = [self]
+        current = self
+        while current.next is not None:
+            #print(f'value of current object is {current.value}') #debug
+            current = current.next
+            result.append(current)
+
+        #print('got objects') #debug
+        return result
+
+    def insert(self, index, value):
+        temp = self.objects()[index]
+        self.objects()[index-1].next = Series(value)
+        self.objects()[index].next = temp
+        del temp
 
     def copy(self):
         output = Series(self[0], self.type, self.subType)
@@ -243,3 +263,12 @@ class Series:
                 current = current.next
 
         return output
+
+    @staticmethod
+    def valid_conversion(item, ansType):
+        try:
+            ansType(item)
+        except TypeError:
+            return False
+        else:
+            return True
