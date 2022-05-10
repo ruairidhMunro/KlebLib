@@ -1,7 +1,9 @@
-"""convert_base -- convert numbers between two specified bases."""
+"""convert_base -- convert numbers between two specified bases.
+detect_base -- detect the base of a given number
+"""
 from math import log
 
-__all__ = ['convert_base']
+__all__ = ['convert_base', 'detect_base']
 
 POSS_DIGITS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#£&%;:€$¥_^§|~<>()[]{}.,!?"ςερτυθιοσδφγξλζψωβцгшщзфлджэячиьбюъ'
 
@@ -139,3 +141,14 @@ def convert_base(num:int|str, base:int|str=10, ansBase:int|str=10) -> str:
         ans += digit
 
     return ans
+
+def detect_base(num:str) -> int:
+    """Detect the lowest possible base for a given number
+
+    Arguments:
+    num -- the number to be analysed
+    """
+    base = 0
+    for char in num:
+        if POSS_DIGITS.index(char) > base: base = POSS_DIGITS.index(char)
+    return base
