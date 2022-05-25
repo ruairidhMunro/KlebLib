@@ -217,15 +217,7 @@ class Series:
 
     def objects(self):
         #print(f'getting objects of series with head {self.value}') #debug
-        result = [self]
-        current = self
-        while current.next is not None:
-            #print(f'value of current object is {current.value}') #debug
-            current = current.next
-            result.append(current)
-
-        #print('got objects') #debug
-        return result
+        return SeriesObjects(self)
 
     def insert(self, index, value):
         temp = self.objects()[index]
@@ -246,21 +238,11 @@ class Series:
         return self.copy()
 
     def __deepcopy__(self, memo=None):
-        try:
-            output = Series(deepcopy(self[0]), self.type, self.subType)
-            
-        except AttributeError:
-            output = Series(self[0], self.type, self.subType)
-            current = output
-            for i in range(1, len(self)):
-                current.next = Series(self[i])
-                current = current.next
-                
-        else: #continue code in try block
-            current = output
-            for i in range(1, len(self)):
-                current.next = Series(self[i].deepcopy(), self.type, self.subType)
-                current = current.next
+        output = Series(deepcopy(self[0]), self.type, self.subType)
+        current = output
+        for i in range(1, len(self)):
+            current.next = Series(deepcopy(self[i]), self.type, self.subType)
+            current = current.next
 
         return output
 
@@ -272,3 +254,25 @@ class Series:
             return False
         else:
             return True
+
+class SeriesObjects:
+    def __init__(self, series):
+        self.series = series
+
+    def __getitem__(self, index):
+        current = self.series
+        negRange = range(len(self.series), len(self.series) + index - 1, -1)
+        
+        for i in negRange if index < 0 else range(index):
+            current = current.next
+            if current is None:
+                raise IndexError('series objects index out of range')
+        return current
+
+    def __iter__(self):
+        self.iterIndex = -1
+        return self
+
+    def __next__(self):
+        self.iterIndex += 1
+        return self[iterIndex]
