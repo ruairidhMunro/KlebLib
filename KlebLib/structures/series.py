@@ -70,15 +70,7 @@ class Series:
     def __add__(self, other):
         result = deepcopy(self)
 
-        if type(other) is self.type or Series.valid_conversion(other, self.type):
-            other = self.type(other)
-            if result.subType is not None and type(other) is not result.subType:
-                raise TypeError(f'series of type {other.type} cannot be appended to series of subtype {self.subType}')
-                
-            result.objects()[-1].next = Series(other, type(other))
-            return result
-
-        elif type(other) is list or type(other) is tuple or type(other) is set:
+        if Series.is_container(other):
             other = Series(other)
         
         if type(other) is Series:
@@ -86,36 +78,20 @@ class Series:
                 raise TypeError(f'cannot add series of type {other.type} to series of type {self.type}')
 
             result.objects()[-1].next = other
+            return result
             
         else:
-            raise TypeError(f'cannot add object of type {type(other)} to series of type {self.type}')
-
-        return result
+            return NotImplemented
 
     def __radd__(self, other):
-        if type(other) is self.type:
-            output = Series(other)
-            output.next = self.deepcopy()
-            
-        elif type(other) is list or type(other) is tuple or type(other) is set:
-            output = Series(other)
-            if output.type != self.type:
-                raise TypeError(f'cannot add series of type {self.type} to container containing type {other.type}')
+        if not Series.is_container(other):
+            return NotImplemented
 
-            output.objects()[-1].next = self.deepcopy()
-            
-        else:
-            raise IndexError(f'cannot add series of type {self.type} to object of type {type(other)}')
+        otherType = type(other)
+        return other + otherType(self)
 
-        return output
-
-    def __iadd__(self, other):
-        if type(other) is self.type or Series.valid_conversion(other, self.type):
-            other = self.type(other)
-            self.objects()[-1].next = Series(other, type(other))
-            return self
-        
-        elif type(other) is list or type(other) is tuple or type(other) is set:
+    def __iadd__(self, other)
+        if is_container(other):
             other = Series(other)
             
         if type(other) is Series:
@@ -123,11 +99,10 @@ class Series:
                 raise TypeError(f'cannot add series of type {other.type.__name__} to series of type {self.type.__name__}')
 
             self.objects()[-1].next = other
+            return self
             
         else:
-            raise TypeError(f'cannot add object of type {type(other).__name__} to series of type {self.type.__name__}')
-
-        return self
+            return NotImplemented
 
     def __repr__(self):
         output = 'KlebLib.structures.series.Series(['
@@ -215,16 +190,6 @@ class Series:
             
         self.objects()[index-1].next = self.objects()[index+1]
 
-    def objects(self):
-        #print(f'getting objects of series with head {self.value}') #debug
-        return SeriesObjects(self)
-
-    def insert(self, index, value):
-        temp = self.objects()[index]
-        self.objects()[index-1].next = Series(value)
-        self.objects()[index].next = temp
-        del temp
-
     def copy(self):
         output = Series(self[0], self.type, self.subType)
         current = output
@@ -246,6 +211,22 @@ class Series:
 
         return output
 
+    def objects(self):
+        #print(f'getting objects of series with head {self.value}') #debug
+        return SeriesObjects(self)
+
+    def add(self, item):
+        if type(item) is self.type or Series.valid_conversion(item, self.type):
+            self += Series(self.type(item))
+        else:
+            raise TypeError(f'cannot add object of type {type(other).__name__} to series of type {self.type.__name__}')
+
+    def insert(self, index, value):
+        temp = self.objects()[index]
+        self.objects()[index-1].next = Series(value)
+        self.objects()[index].next = temp
+        del temp
+
     @staticmethod
     def valid_conversion(item, ansType):
         try:
@@ -254,6 +235,18 @@ class Series:
             return False
         else:
             return True
+
+    @staticmethod
+    def is_container(item):
+        if type(item) is string:
+            return False
+        else:
+            try:
+                item[0]
+            except IndexError:
+                return False
+            else:
+                return True
 
 class SeriesObjects:
     def __init__(self, series):
