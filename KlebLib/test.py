@@ -1,25 +1,25 @@
-from .maths import baseconversion, fraction, polynomial, rounding, universaladdition
-from .structures import series, tree
+from KlebLib import fraction, polynomial, baseconversion, universaladdition, series
+from typing import Any
 
 class Test:
     def __init__(self, testType:str, **kwargs):
         self.testType = testType
         self.kwargs = kwargs
 
-    def __call__(self, *args):
+    def test(self, *args:Any) -> str:
         if self.testType == 'fraction':
-            print(self.fraction_test(args))
+            return self._fraction_test(args)
         elif self.testType == 'polynomial':
-            print(self.polynomial_test(args))
+            return self._polynomial_test(args)
         elif self.testType == 'baseconversion':
-            print(self.conversion_test(args))
+            return self._conversion_test(args)
         elif self.testType == 'universaladdition':
-            print(self.universal_addition_test(args))
+            return self._universal_addition_test(args)
         elif self.testType == 'series':
-            print(self.series_test(args))
+            return self._series_test(args)
 
     def __repr__(self):
-        output = f'KlebLib.test.Test({self.testType}, '
+        output = f'Test({self.testType}, '
 
         #print(f'kwargs are of length {len(self.kwargs)}') #debug
         for i, (k, v) in enumerate(self.kwargs.items()):
@@ -32,7 +32,7 @@ class Test:
 
     #Individual tests
 
-    def fraction_test(self, args):
+    def _fraction_test(self, args):
         fraction1 = fraction.Fraction(self.kwargs['fraction1'])
         fraction2 = fraction.Fraction(self.kwargs['fraction2'])
 
@@ -48,7 +48,7 @@ class Test:
 
         return str(fraction3)
 
-    def polynomial_test(self, args):
+    def _polynomial_test(self, args):
         testPolynomial = polynomial.Polynomial(self.kwargs['polynomial'])
 
         differentiated = testPolynomial.differentiate(args[0])
@@ -61,23 +61,21 @@ class Test:
             'integrated': integrated.polynomial
         })
 
-    def conversion_test(self, args):
+    def _conversion_test(self, args):
         num = self.kwargs['num']
         base = self.kwargs['base']
         convertedBase = self.kwargs['baseToConvertTo']
 
         return baseconversion.convert_base(num, base, convertedBase)
 
-    def universal_addition_test(self, args):
+    def _universal_addition_test(self, args):
         num1 = self.kwargs['num1']
         num2 = self.kwargs['num2']
         base = self.kwargs['base']
 
         return universaladdition.add(base, num1, num2)
 
-    def series_test(self, args):
-        testSeries = series.Series(self.kwargs['data'], self.kwargs.get('seriesType'), self.kwargs.get('strictType'))
-        return str({
-            'base series': str(testSeries),
-            'base series + arg': str(testSeries + args[0])
-        })
+    def _series_test(self, args):
+        testSeries = series.Series(self.kwargs['data'], self.kwargs['type'], self.kwargs['strictType'])
+        return str({'base series': str(testSeries),
+                    'base series + arg': str(testSeries + args[0])})
