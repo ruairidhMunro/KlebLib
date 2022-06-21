@@ -129,8 +129,12 @@ dmypy.json
 .pyre/
 
 # Replit stuff
-main.py
+.replit
 pyproject.toml
 
+# VSCode stuff
+.vscode
+
 # Testing stuff
+main.py
 testvalues.py
