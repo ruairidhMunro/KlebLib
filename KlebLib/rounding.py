@@ -1,10 +1,14 @@
-def ceiling(num, decPlaces=0):
+def ceiling(num:float, decPlaces:int=0) -> float:
+    #Check validity of input
+    if not isinstance(num, int) and not isinstance(num, float):
+        raise ValueError(f'Expected int or float, got {type(num).__name__}')
+    if not isinstance(decPlaces, int):
+        raise ValueError(f'Expected int, got {type(decPlaces).__name__}')
+    
     #Set up variables
     overflow = False
     num = str(num)
-    numDigits = []
-    for digit in num:
-        numDigits.append(digit)
+    numDigits = [i for i in num]
     decPoint = numDigits.index('.')
 
     #Removes the decimal point and finds the last decimal place that will remain
@@ -41,11 +45,11 @@ def ceiling(num, decPlaces=0):
     num = ''
     for i in numDigits:
         num += str(i)
-    num = float(num)
-    return num
+        
+    return float(num)
     
-def smartRound(num, decPlaces):
+def smart_round(num:float, decPlaces:int=0) -> float:
     if str(num)[decPlaces + 1] >= 5:
-        return ceiling(num)
+        return ceiling(num, decPlaces)
     else:
-        return round(num, 0)
+        return round(num, decPlaces)

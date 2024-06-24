@@ -1,0 +1,13 @@
+name: Release Notes
+
+changelog:
+  categories:
+    - title: Updates
+      labels:
+        - enhancement
+    - title: Bug Fixes
+      labels:
+        - bug
+    - title: Other Changes
+      labels:
+        - "*"
